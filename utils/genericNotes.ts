@@ -95,5 +95,17 @@ export function areNotesEqual(note1: GenericNote, note2: GenericNote) {
 }
 
 export function prettifyModifier(note: GenericNote) {
+  if (!note.modifier) return "";
   return note.modifier === "SHARP" ? "#" : "♭";
+}
+
+export function formatFullNote(note: GenericNote) {
+  if (!note.modifier) return note.letter;
+
+  const sharp = flatToSharp(note);
+  const flat = sharpToFlat(note);
+
+  return `${sharp.letter}${prettifyModifier(sharp)} / ${
+    flat.letter
+  }${prettifyModifier(flat)}`;
 }

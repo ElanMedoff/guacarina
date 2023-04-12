@@ -1,4 +1,7 @@
+import Footer from "./Footer";
 import "./globals.css";
+import Header from "./Header";
+import Wrapper from "./Wrapper";
 
 export const metadata = {
   title: "",
@@ -12,7 +15,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body data-theme="light">{children}</body>
+      <body data-theme="garden bg-base-100">
+        <Header />
+        <Wrapper>{children}</Wrapper>
+        <Footer />
+      </body>
     </html>
   );
 }
