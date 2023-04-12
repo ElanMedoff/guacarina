@@ -48,8 +48,8 @@ export default function Header() {
         transitionProperty: "top",
       }}
     >
-      <div className="flex justify-between items-end mx-14">
-        <h3 className="text-4xl">
+      <div className="flex justify-between items-center mx-14">
+        <h3 className="text-4xl text-primary">
           <Link href="/">guacarina</Link>
         </h3>
         <span className="cursor-pointer select-none">

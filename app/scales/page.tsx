@@ -1,11 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Partition from "./Partition";
 import { majorGenericScales } from "@/utils/genericScales";
 import { majorOcarinaScales, minorOcarinaScales } from "@/utils/ocarinaScales";
 import { formatFullNote } from "@/utils/genericNotes";
 import { twMerge as tm } from "tailwind-merge";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+/* import { usePathname, useRouter, useSearchParams } from "next/navigation"; */
 
 type ScaleVariant = "major" | "minor";
 export default function Home({
@@ -17,9 +17,9 @@ export default function Home({
   const { root, variant } = searchParams;
   // TODO: update params to be readable
 
-  const clientSearchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
+  /* const clientSearchParams = useSearchParams(); */
+  /* const pathname = usePathname(); */
+  /* const router = useRouter(); */
   const [scaleRootIndex, setScaleRootIndex] = useState<number>(
     root ? parseInt(root) : 0
   );
@@ -32,13 +32,13 @@ export default function Home({
       ? majorOcarinaScales[scaleRootIndex]
       : minorOcarinaScales[scaleRootIndex];
 
-  useEffect(() => {
-    const params = new URLSearchParams(clientSearchParams);
-
-    params.set("root", scaleRootIndex.toString());
-    params.set("variant", scaleVariant);
-    router.push(`${pathname}?${params.toString()}`);
-  }, [scaleRootIndex, scaleVariant]);
+  /* useEffect(() => { */
+  /*   const params = new URLSearchParams(clientSearchParams); */
+  /**/
+  /*   params.set("root", scaleRootIndex.toString()); */
+  /*   params.set("variant", scaleVariant); */
+  /*   router.push(`${pathname}?${params.toString()}`); */
+  /* }, [scaleRootIndex, scaleVariant]); */
 
   return (
     <>
