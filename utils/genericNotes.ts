@@ -4,12 +4,12 @@ import { isExisty, toLowerCase } from "./helpers";
 export type Letter = "C" | "D" | "E" | "F" | "G" | "A" | "B";
 export type Modifier = "SHARP" | "FLAT";
 
-export interface GenericNote {
+export interface Note {
   letter: Letter;
   modifier?: Modifier;
 }
 
-interface SharpNote extends GenericNote {
+interface SharpNote extends Note {
   modifier?: "SHARP";
 }
 
@@ -28,7 +28,7 @@ export const notes: SharpNote[] = [
   { letter: "B" },
 ];
 
-export function sharpToFlat(note: GenericNote): GenericNote {
+export function sharpToFlat(note: Note): Note {
   if (!note.modifier) return note;
 
   if (note.modifier === "FLAT") return note;
@@ -55,7 +55,7 @@ export function sharpToFlat(note: GenericNote): GenericNote {
   };
 }
 
-export function flatToSharp(note: GenericNote): GenericNote {
+export function flatToSharp(note: Note): Note {
   if (!note.modifier) return note;
 
   if (note.modifier === "SHARP") return note;
@@ -82,7 +82,7 @@ export function flatToSharp(note: GenericNote): GenericNote {
   };
 }
 
-export function areNotesEqual(note1: GenericNote, note2: GenericNote) {
+export function areNotesEqual(note1: Note, note2: Note) {
   note1 = flatToSharp(note1);
   note2 = flatToSharp(note2);
   if (note1.letter !== note2.letter) return false;
@@ -97,12 +97,12 @@ export function areNotesEqual(note1: GenericNote, note2: GenericNote) {
   return true;
 }
 
-export function prettifyModifier(note: GenericNote) {
+export function prettifyModifier(note: Note) {
   if (!note.modifier) return "";
   return note.modifier === "SHARP" ? "#" : "♭";
 }
 
-export function formatFullNote(note: GenericNote) {
+export function formatFullNote(note: Note) {
   if (!note.modifier) return note.letter;
 
   const sharp = flatToSharp(note);
@@ -117,7 +117,7 @@ export type ParamNote =
   | `${Lowercase<Letter>}_${Lowercase<Modifier>}`
   | `${Lowercase<Letter>}_`;
 
-function paramNoteToGenericNote(paramNote: ParamNote): GenericNote {
+function paramNoteToGenericNote(paramNote: ParamNote): Note {
   const [lowerLetter, lowerModifier] = paramNote.split("_");
   const letter = lowerLetter.toUpperCase() as Letter;
 
@@ -132,10 +132,7 @@ function paramNoteToGenericNote(paramNote: ParamNote): GenericNote {
   };
 }
 
-export function genericNoteToParamNote({
-  letter,
-  modifier,
-}: GenericNote): ParamNote {
+export function genericNoteToParamNote({ letter, modifier }: Note): ParamNote {
   return `${toLowerCase(letter)}_${toLowerCase(modifier ?? "")}`;
 }
 

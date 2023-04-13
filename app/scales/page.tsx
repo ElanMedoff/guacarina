@@ -131,17 +131,17 @@ export default function Home({
         <Partition
           partition={scale.prologue}
           showVariants={showNoteVariants}
-          partitionName={"Before the root note"}
+          partitionName={"before the root note"}
         />
         <Partition
           partition={scale.core}
           showVariants={showNoteVariants}
-          partitionName={"Core scale"}
+          partitionName={"core scale"}
         />
         <Partition
           partition={scale.epilogue}
           showVariants={showNoteVariants}
-          partitionName={"After the first octave"}
+          partitionName={"after the first octave"}
         />
       </section>
     </>

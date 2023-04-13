@@ -1,4 +1,4 @@
-import { GenericNote } from "./genericNotes";
+import { Note } from "./genericNotes";
 
 export type HoleName =
   | `${"LEFT" | "RIGHT"}_BIG_HOLE`
@@ -42,7 +42,7 @@ export type HoleConfiguration = [
 
 export interface OcarinaNote {
   octave: 0 | 1;
-  note: GenericNote;
+  note: Note;
   variants: HoleConfiguration[];
   index: number;
 }

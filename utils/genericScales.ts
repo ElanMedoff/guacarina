@@ -1,8 +1,8 @@
-import { areNotesEqual, GenericNote, notes } from "@/utils/genericNotes";
+import { areNotesEqual, Note, notes } from "@/utils/genericNotes";
 
 export interface Scale {
-  root: GenericNote;
-  notes: GenericNote[];
+  root: Note;
+  notes: Note[];
 }
 
 const majorPattern = [0, 2, 4, 5, 7, 9, 11, 12] as const;
@@ -22,7 +22,7 @@ const generateScales = (
 export const majorGenericScales = generateScales(majorPattern);
 export const minorGenericScales = generateScales(minorPattern);
 
-export function getNextNoteInScale(currNote: GenericNote, scale: Scale) {
+export function getNextNoteInScale(currNote: Note, scale: Scale) {
   const currIndex = scale.notes.findIndex((note) =>
     areNotesEqual(currNote, note)
   );

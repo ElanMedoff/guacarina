@@ -5,7 +5,7 @@ import {
   Scale,
 } from "@/utils/genericScales";
 import { OcarinaNote, ocarinaNotes } from "@/utils/ocarinaNotes";
-import { areNotesEqual, GenericNote } from "@/utils/genericNotes";
+import { areNotesEqual, Note } from "@/utils/genericNotes";
 
 export interface OcarinaScale {
   prologue: OcarinaNote[];
@@ -17,15 +17,15 @@ const isOcarinaNoteInScale = (ocarinaNote: OcarinaNote, scale: Scale) => {
   return scale.notes.some((note) => areNotesEqual(note, ocarinaNote.note));
 };
 
-// can't be -1
-const getRootOcarinaNote = (root: GenericNote) => {
+// can't be undefined
+const getRootOcarinaNote = (root: Note) => {
   return ocarinaNotes.find((ocarinaNote) =>
     areNotesEqual(root, ocarinaNote.note)
   )!;
 };
 
-// can be -1
-const getRootOctiveOcarinaNote = (root: GenericNote) => {
+// can be undefined
+const getRootOctiveOcarinaNote = (root: Note) => {
   const rootOcarinaNote = getRootOcarinaNote(root);
   return ocarinaNotes.find((currOcarinaNote) => {
     return (
@@ -64,7 +64,6 @@ const generateCore = (scale: Scale): OcarinaNote[] => {
 
   if (rootOctiveOcarinaNote === undefined) {
     const lastNote = core.at(-1)!;
-    console.log({ lastNote });
 
     let currNote = lastNote;
     while (currNote.index !== rootOcarinaNote.index) {
