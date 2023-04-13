@@ -44,9 +44,10 @@ export interface OcarinaNote {
   octave: 0 | 1;
   note: GenericNote;
   variants: HoleConfiguration[];
+  index: number;
 }
 
-const ocarinaNotes: OcarinaNote[] = [
+const ocarinaNotesWithoutIndex: Omit<OcarinaNote, "index">[] = [
   {
     octave: 0,
     note: { letter: "A" },
@@ -539,4 +540,11 @@ const ocarinaNotes: OcarinaNote[] = [
   },
 ];
 
-export { ocarinaNotes };
+export const ocarinaNotes: OcarinaNote[] = ocarinaNotesWithoutIndex.map(
+  (ocarinaNote, index) => {
+    return {
+      ...ocarinaNote,
+      index,
+    };
+  }
+);

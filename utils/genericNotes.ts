@@ -1,3 +1,6 @@
+import { Scale } from "./genericScales";
+import { isExisty, toLowerCase } from "./helpers";
+
 export type Letter = "C" | "D" | "E" | "F" | "G" | "A" | "B";
 export type Modifier = "SHARP" | "FLAT";
 
@@ -108,4 +111,37 @@ export function formatFullNote(note: GenericNote) {
   return `${sharp.letter}${prettifyModifier(sharp)} / ${
     flat.letter
   }${prettifyModifier(flat)}`;
+}
+
+export type ParamNote =
+  | `${Lowercase<Letter>}_${Lowercase<Modifier>}`
+  | `${Lowercase<Letter>}_`;
+
+function paramNoteToGenericNote(paramNote: ParamNote): GenericNote {
+  const [lowerLetter, lowerModifier] = paramNote.split("_");
+  const letter = lowerLetter.toUpperCase() as Letter;
+
+  let modifier;
+  if (isExisty(modifier)) {
+    modifier = lowerModifier.toUpperCase() as Modifier;
+  }
+
+  return {
+    letter,
+    modifier,
+  };
+}
+
+export function genericNoteToParamNote({
+  letter,
+  modifier,
+}: GenericNote): ParamNote {
+  return `${toLowerCase(letter)}_${toLowerCase(modifier ?? "")}`;
+}
+
+export function paramNoteToIndex(paramNote: ParamNote, genericScales: Scale[]) {
+  const genericNote = paramNoteToGenericNote(paramNote);
+  return genericScales.findIndex((scale) =>
+    areNotesEqual(scale.root, genericNote)
+  );
 }

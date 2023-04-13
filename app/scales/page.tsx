@@ -3,42 +3,80 @@ import React, { useState } from "react";
 import Partition from "./Partition";
 import { majorGenericScales } from "@/utils/genericScales";
 import { majorOcarinaScales, minorOcarinaScales } from "@/utils/ocarinaScales";
-import { formatFullNote } from "@/utils/genericNotes";
+import {
+  formatFullNote,
+  /* genericNoteToParamNote, */
+  Letter,
+  Modifier,
+  paramNoteToIndex,
+} from "@/utils/genericNotes";
 import { twMerge as tm } from "tailwind-merge";
 /* import { usePathname, useRouter, useSearchParams } from "next/navigation"; */
+/* import { isExisty } from "@/utils/helpers"; */
 
-type ScaleVariant = "major" | "minor";
+type ScalePattern = "major" | "minor";
 export default function Home({
   searchParams,
 }: {
-  // TODO: rename these
-  searchParams: { root?: `${number}`; variant?: ScaleVariant };
+  searchParams: {
+    root?: `${Lowercase<Letter>}_${Lowercase<Modifier>}`;
+    scalePattern?: ScalePattern;
+    showNoteVariants?: `${boolean}`;
+  };
 }) {
-  const { root, variant } = searchParams;
-  // TODO: update params to be readable
+  const {
+    root,
+    scalePattern: scalePatternParam,
+    showNoteVariants: showNoteVariantsParam,
+  } = searchParams;
 
   /* const clientSearchParams = useSearchParams(); */
   /* const pathname = usePathname(); */
   /* const router = useRouter(); */
   const [scaleRootIndex, setScaleRootIndex] = useState<number>(
-    root ? parseInt(root) : 0
+    root ? paramNoteToIndex(root, majorGenericScales) : 0
   );
-  const [scaleVariant, setScaleVariant] = useState<ScaleVariant>(
-    variant ?? "major"
+  const [scalePattern, setScalePattern] = useState<ScalePattern>(
+    scalePatternParam ?? "major"
   );
-  const [showNoteVariants, setShowNoteVariants] = useState(false);
+  const [showNoteVariants, setShowNoteVariants] = useState(
+    Boolean(showNoteVariantsParam)
+  );
   const scale =
-    scaleVariant === "major"
+    scalePattern === "major"
       ? majorOcarinaScales[scaleRootIndex]
       : minorOcarinaScales[scaleRootIndex];
 
-  /* useEffect(() => { */
-  /*   const params = new URLSearchParams(clientSearchParams); */
-  /**/
-  /*   params.set("root", scaleRootIndex.toString()); */
-  /*   params.set("variant", scaleVariant); */
-  /*   router.push(`${pathname}?${params.toString()}`); */
-  /* }, [scaleRootIndex, scaleVariant]); */
+  const setState = ({
+    scaleRootIndex,
+    scalePattern,
+    showNoteVariants,
+  }: {
+    scaleRootIndex?: number;
+    scalePattern?: ScalePattern;
+    showNoteVariants?: boolean;
+  }) => {
+    if (scaleRootIndex !== undefined) setScaleRootIndex(scaleRootIndex);
+    if (scalePattern !== undefined) setScalePattern(scalePattern);
+    if (showNoteVariants !== undefined) setShowNoteVariants(showNoteVariants);
+    /* const params = new URLSearchParams(clientSearchParams); */
+    /**/
+    /* if (isExisty(scaleRootIndex)) { */
+    /*   params.set( */
+    /*     "root", */
+    /*     genericNoteToParamNote(majorGenericScales[scaleRootIndex].root) */
+    /*   ); */
+    /* } */
+    /* if (scalePattern) { */
+    /*   params.set("scalePattern", scalePattern); */
+    /* } */
+    /* if (isExisty(showNoteVariants)) { */
+    /*   params.set("showNoteVariants", showNoteVariants.toString()); */
+    /* } */
+    /* router.push(`${pathname}?${params.toString()}`, { */
+    /*   forceOptimisticNavigation: true, */
+    /* }); */
+  };
 
   return (
     <>
@@ -52,7 +90,7 @@ export default function Home({
                   scaleRootIndex !== index && "btn-outline"
                 )}
                 key={index}
-                onClick={() => setScaleRootIndex(index)}
+                onClick={() => setState({ scaleRootIndex: index })}
               >
                 {formatFullNote(scale.root)}
               </button>
@@ -63,18 +101,18 @@ export default function Home({
           <button
             className={tm(
               "btn btn-primary",
-              scaleVariant !== "major" && "btn-outline"
+              scalePattern !== "major" && "btn-outline"
             )}
-            onClick={() => setScaleVariant("major")}
+            onClick={() => setState({ scalePattern: "major" })}
           >
             Major
           </button>
           <button
             className={tm(
               "btn btn-primary",
-              scaleVariant !== "minor" && "btn-outline"
+              scalePattern !== "minor" && "btn-outline"
             )}
-            onClick={() => setScaleVariant("minor")}
+            onClick={() => setState({ scalePattern: "minor" })}
           >
             Minor
           </button>
@@ -83,7 +121,7 @@ export default function Home({
               "btn btn-primary",
               !showNoteVariants && "btn-outline"
             )}
-            onClick={() => setShowNoteVariants((prev) => !prev)}
+            onClick={() => setState({ showNoteVariants: !showNoteVariants })}
           >
             Show Note Variants
           </button>

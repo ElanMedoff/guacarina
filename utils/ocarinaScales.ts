@@ -1,4 +1,5 @@
 import {
+  getNextNoteInScale,
   majorGenericScales,
   minorGenericScales,
   Scale,
@@ -17,54 +18,77 @@ const isOcarinaNoteInScale = (ocarinaNote: OcarinaNote, scale: Scale) => {
 };
 
 // can't be -1
-const getRootIndex = (root: GenericNote) => {
-  return ocarinaNotes.findIndex((ocarinaNote) =>
+const getRootOcarinaNote = (root: GenericNote) => {
+  return ocarinaNotes.find((ocarinaNote) =>
     areNotesEqual(root, ocarinaNote.note)
-  );
+  )!;
 };
 
 // can be -1
-const getRootOctiveIndex = (root: GenericNote) => {
-  const rootIndex = getRootIndex(root);
-  return ocarinaNotes.findIndex((currOcarinaNote, currOcarinaNoteIndex) => {
+const getRootOctiveOcarinaNote = (root: GenericNote) => {
+  const rootOcarinaNote = getRootOcarinaNote(root);
+  return ocarinaNotes.find((currOcarinaNote) => {
     return (
       areNotesEqual(root, currOcarinaNote.note) &&
-      currOcarinaNoteIndex > rootIndex
+      currOcarinaNote.index > rootOcarinaNote.index
     );
   });
 };
 
 const generatePrologue = (scale: Scale) => {
-  const rootIndex = getRootIndex(scale.root);
-  // TODO: way to do this without using currOcarinaNoteIndex?
+  const rootOcarinaNote = getRootOcarinaNote(scale.root);
   return ocarinaNotes
-    .filter((_, currOcarinaNoteIndex) => currOcarinaNoteIndex < rootIndex)
+    .filter((currOcarinaNote) => currOcarinaNote.index < rootOcarinaNote.index)
     .filter((currOcarinaNote) => isOcarinaNoteInScale(currOcarinaNote, scale));
 };
 
-const generateCore = (scale: Scale): OcarinaNote[] => {
-  const rootIndex = getRootIndex(scale.root);
-  const rootOctiveIndex = getRootOctiveIndex(scale.root);
+const generateBasicCore = (scale: Scale): OcarinaNote[] => {
+  const rootOcarinaNote = getRootOcarinaNote(scale.root);
+  const rootOctiveOcarinaNote = getRootOctiveOcarinaNote(scale.root);
 
   return ocarinaNotes
-    .filter((_, currOcarinaNoteIndex) => {
-      if (currOcarinaNoteIndex < rootIndex) return false;
-      if (currOcarinaNoteIndex > rootOctiveIndex) {
-        if (rootOctiveIndex === -1) return true;
-        return false;
-      }
+    .filter((currOcarinaNote) => {
+      if (currOcarinaNote.index < rootOcarinaNote.index) return false;
+      if (rootOctiveOcarinaNote === undefined) return true;
+      if (currOcarinaNote.index > rootOctiveOcarinaNote.index) return false;
       return true;
     })
     .filter((currOcarinaNote) => isOcarinaNoteInScale(currOcarinaNote, scale));
 };
 
-const generateEpilogue = (scale: Scale) => {
-  const rootOctiveIndex = getRootOctiveIndex(scale.root);
+const generateCore = (scale: Scale): OcarinaNote[] => {
+  const rootOcarinaNote = getRootOcarinaNote(scale.root);
+  const rootOctiveOcarinaNote = getRootOctiveOcarinaNote(scale.root);
 
-  if (rootOctiveIndex === -1) return [];
+  let core = generateBasicCore(scale);
+
+  if (rootOctiveOcarinaNote === undefined) {
+    const lastNote = core.at(-1)!;
+    console.log({ lastNote });
+
+    let currNote = lastNote;
+    while (currNote.index !== rootOcarinaNote.index) {
+      const nextNote = getNextNoteInScale(currNote.note, scale);
+      const nextOcarinaNote = ocarinaNotes.find((ocarinaNote) =>
+        areNotesEqual(ocarinaNote.note, nextNote)
+      )!;
+      core.push(nextOcarinaNote);
+      currNote = nextOcarinaNote;
+    }
+  }
+
+  return core;
+};
+
+const generateEpilogue = (scale: Scale) => {
+  const rootOctiveOcarinaNote = getRootOctiveOcarinaNote(scale.root);
+
+  if (rootOctiveOcarinaNote === undefined) return [];
 
   return ocarinaNotes
-    .filter((_, currOcarinaNoteIndex) => currOcarinaNoteIndex > rootOctiveIndex)
+    .filter(
+      (currOcarinaNote) => currOcarinaNote.index > rootOctiveOcarinaNote.index
+    )
     .filter((currOcarinaNote) => isOcarinaNoteInScale(currOcarinaNote, scale));
 };
 

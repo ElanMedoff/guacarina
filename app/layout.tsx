@@ -1,5 +1,5 @@
-import Footer from "./Footer";
 import "./globals.css";
+import Footer from "./Footer";
 import Header from "./Header";
 import Wrapper from "./Wrapper";
 
