@@ -18,8 +18,8 @@ export default function Partition({
   if (partition.length === 0) return null;
 
   return (
-    <div className="py-5">
-      {partitionName}
+    <div className="flex flex-col gap-4">
+      <h3 className="text-3xl font-bold">{partitionName}</h3>
       <ul className="flex flex-wrap">
         {partition.map((ocarinaNote) => {
           return (

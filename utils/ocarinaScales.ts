@@ -35,11 +35,18 @@ const getRootOctiveOcarinaNote = (root: Note) => {
   });
 };
 
-const generatePrologue = (scale: Scale) => {
+const generatePrologue = (scale: Scale, core: OcarinaNote[]) => {
   const rootOcarinaNote = getRootOcarinaNote(scale.root);
   return ocarinaNotes
     .filter((currOcarinaNote) => currOcarinaNote.index < rootOcarinaNote.index)
-    .filter((currOcarinaNote) => isOcarinaNoteInScale(currOcarinaNote, scale));
+    .filter((currOcarinaNote) => isOcarinaNoteInScale(currOcarinaNote, scale))
+    .filter((currOcarinaNote) => {
+      return !core.some(
+        (coreNote) =>
+          areNotesEqual(coreNote.note, currOcarinaNote.note) &&
+          coreNote.octave === currOcarinaNote.octave
+      );
+    });
 };
 
 const generateBasicCore = (scale: Scale): OcarinaNote[] => {
@@ -92,9 +99,10 @@ const generateEpilogue = (scale: Scale) => {
 };
 
 const generateOcarinaScale = (genericScale: Scale): OcarinaScale => {
+  const core = generateCore(genericScale);
   return {
-    prologue: generatePrologue(genericScale),
-    core: generateCore(genericScale),
+    prologue: generatePrologue(genericScale, core),
+    core,
     epilogue: generateEpilogue(genericScale),
   };
 };

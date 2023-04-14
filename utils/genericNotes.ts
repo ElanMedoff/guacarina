@@ -122,7 +122,7 @@ function paramNoteToGenericNote(paramNote: ParamNote): Note {
   const letter = lowerLetter.toUpperCase() as Letter;
 
   let modifier;
-  if (isExisty(modifier)) {
+  if (isExisty(lowerModifier)) {
     modifier = lowerModifier.toUpperCase() as Modifier;
   }
 
@@ -138,6 +138,7 @@ export function genericNoteToParamNote({ letter, modifier }: Note): ParamNote {
 
 export function paramNoteToIndex(paramNote: ParamNote, genericScales: Scale[]) {
   const genericNote = paramNoteToGenericNote(paramNote);
+  console.log({ genericNote });
   return genericScales.findIndex((scale) =>
     areNotesEqual(scale.root, genericNote)
   );

@@ -317,7 +317,7 @@ const ocarinaNotesWithoutIndex: Omit<OcarinaNote, "index">[] = [
     ],
   },
   {
-    octave: 0,
+    octave: 1,
     note: { letter: "A" },
     variants: [
       [
@@ -337,7 +337,7 @@ const ocarinaNotesWithoutIndex: Omit<OcarinaNote, "index">[] = [
     ],
   },
   {
-    octave: 0,
+    octave: 1,
     note: { letter: "A", modifier: "SHARP" },
     variants: [
       [
@@ -371,7 +371,7 @@ const ocarinaNotesWithoutIndex: Omit<OcarinaNote, "index">[] = [
     ],
   },
   {
-    octave: 0,
+    octave: 1,
     note: { letter: "B" },
     variants: [
       [

@@ -3,6 +3,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { twMerge as tm } from "tailwind-merge";
 import { transitionProperties } from "@/utils/styleHelpers";
+import { Chango } from "next/font/google";
+
+const font = Chango({
+  subsets: ["latin"],
+  display: "swap",
+  weight: "400",
+});
 
 export default function Header() {
   const [scrollDir, setScrollDir] = useState<"down" | "up">("up");
@@ -48,13 +55,11 @@ export default function Header() {
         transitionProperty: "top",
       }}
     >
-      <div className="flex justify-between items-center mx-14">
-        <h3 className="text-4xl text-primary">
-          <Link href="/">guacarina</Link>
-        </h3>
-        <span className="cursor-pointer select-none">
-          <Link href="/scales">scales</Link>
-        </span>
+      <div className="mx-14">
+        <h1 className={tm("text-4xl text-primary select-none", font.className)}>
+          {/* <Link href="/">guacarina</Link> */}
+          guacarina
+        </h1>
       </div>
     </nav>
   );

@@ -1,85 +1,77 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Partition from "./Partition";
 import { majorGenericScales } from "@/utils/genericScales";
 import { majorOcarinaScales, minorOcarinaScales } from "@/utils/ocarinaScales";
 import {
   formatFullNote,
-  /* genericNoteToParamNote, */
+  genericNoteToParamNote,
   Letter,
   Modifier,
   paramNoteToIndex,
 } from "@/utils/genericNotes";
 import { twMerge as tm } from "tailwind-merge";
-/* import { usePathname, useRouter, useSearchParams } from "next/navigation"; */
-/* import { isExisty } from "@/utils/helpers"; */
+import { usePathname, useSearchParams } from "next/navigation";
 
 type ScalePattern = "major" | "minor";
-export default function Home({
-  searchParams,
-}: {
-  searchParams: {
-    root?: `${Lowercase<Letter>}_${Lowercase<Modifier>}`;
-    scalePattern?: ScalePattern;
-    showNoteVariants?: `${boolean}`;
-  };
-}) {
+interface SearchParams {
+  root?: `${Lowercase<Letter>}_${Lowercase<Modifier>}`;
+  pattern?: ScalePattern;
+  variants?: "0" | "1";
+  all?: "0" | "1";
+}
+
+export default function Home({ searchParams }: { searchParams: SearchParams }) {
   const {
     root,
-    scalePattern: scalePatternParam,
-    showNoteVariants: showNoteVariantsParam,
+    pattern: patternParam,
+    variants: variantsParam,
+    all: allParam,
   } = searchParams;
 
-  /* const clientSearchParams = useSearchParams(); */
-  /* const pathname = usePathname(); */
-  /* const router = useRouter(); */
+  const clientSearchParams = useSearchParams();
+  const pathname = usePathname();
   const [scaleRootIndex, setScaleRootIndex] = useState<number>(
     root ? paramNoteToIndex(root, majorGenericScales) : 0
   );
   const [scalePattern, setScalePattern] = useState<ScalePattern>(
-    scalePatternParam ?? "major"
+    patternParam ?? "major"
   );
   const [showNoteVariants, setShowNoteVariants] = useState(
-    Boolean(showNoteVariantsParam)
+    variantsParam ? Boolean(parseInt(variantsParam)) : false
+  );
+  const [showAllNotes, setShowAllNotes] = useState(
+    allParam ? Boolean(parseInt(allParam)) : false
   );
   const scale =
     scalePattern === "major"
       ? majorOcarinaScales[scaleRootIndex]
       : minorOcarinaScales[scaleRootIndex];
 
-  const setState = ({
-    scaleRootIndex,
+  useEffect(() => {
+    const params = new URLSearchParams(clientSearchParams);
+
+    params.set(
+      "root",
+      genericNoteToParamNote(majorGenericScales[scaleRootIndex].root)
+    );
+    params.set("pattern", scalePattern);
+    params.set("variants", showNoteVariants ? "1" : "0");
+    params.set("all", showAllNotes ? "1" : "0");
+
+    window.history.pushState(undefined, "", `${pathname}?${params.toString()}`);
+  }, [
+    clientSearchParams,
+    pathname,
     scalePattern,
+    scaleRootIndex,
+    showAllNotes,
     showNoteVariants,
-  }: {
-    scaleRootIndex?: number;
-    scalePattern?: ScalePattern;
-    showNoteVariants?: boolean;
-  }) => {
-    if (scaleRootIndex !== undefined) setScaleRootIndex(scaleRootIndex);
-    if (scalePattern !== undefined) setScalePattern(scalePattern);
-    if (showNoteVariants !== undefined) setShowNoteVariants(showNoteVariants);
-    /* const params = new URLSearchParams(clientSearchParams); */
-    /**/
-    /* if (isExisty(scaleRootIndex)) { */
-    /*   params.set( */
-    /*     "root", */
-    /*     genericNoteToParamNote(majorGenericScales[scaleRootIndex].root) */
-    /*   ); */
-    /* } */
-    /* if (scalePattern) { */
-    /*   params.set("scalePattern", scalePattern); */
-    /* } */
-    /* if (isExisty(showNoteVariants)) { */
-    /*   params.set("showNoteVariants", showNoteVariants.toString()); */
-    /* } */
-    /* router.push(`${pathname}?${params.toString()}`, { */
-    /*   forceOptimisticNavigation: true, */
-    /* }); */
-  };
+  ]);
 
   return (
-    <>
+    <div className="flex flex-col gap-5 my-4">
+      <span className="text-sm italic">learn your ocarina scales in style</span>
       <section className="flex flex-col gap-6">
         <div className="flex gap-2 flex-wrap">
           {majorGenericScales.map((scale, index) => {
@@ -90,60 +82,78 @@ export default function Home({
                   scaleRootIndex !== index && "btn-outline"
                 )}
                 key={index}
-                onClick={() => setState({ scaleRootIndex: index })}
+                onClick={() => setScaleRootIndex(index)}
               >
                 {formatFullNote(scale.root)}
               </button>
             );
           })}
         </div>
-        <div className="flex gap-2 flex-wrap content-center">
-          <button
-            className={tm(
-              "btn btn-primary",
-              scalePattern !== "major" && "btn-outline"
-            )}
-            onClick={() => setState({ scalePattern: "major" })}
-          >
-            Major
-          </button>
-          <button
-            className={tm(
-              "btn btn-primary",
-              scalePattern !== "minor" && "btn-outline"
-            )}
-            onClick={() => setState({ scalePattern: "minor" })}
-          >
-            Minor
-          </button>
-          <button
-            className={tm(
-              "btn btn-primary",
-              !showNoteVariants && "btn-outline"
-            )}
-            onClick={() => setState({ showNoteVariants: !showNoteVariants })}
-          >
-            Show Note Variants
-          </button>
+        <div className="flex gap-20">
+          <div>
+            <label className="flex items-center gap-4 mb-2 cursor-pointer">
+              <input
+                type="radio"
+                className="radio radio-primary"
+                checked={scalePattern === "major"}
+                onChange={() => setScalePattern("major")}
+              />
+              <span className="select-none">major scale</span>
+            </label>
+            <label className="flex items-center gap-4 cursor-pointer">
+              <input
+                type="radio"
+                className="radio radio-primary"
+                checked={scalePattern === "minor"}
+                onChange={() => setScalePattern("minor")}
+              />
+              <span className="select-none">minor scale</span>
+            </label>
+          </div>
+          <div>
+            <label className="flex items-center gap-4 mb-2 cursor-pointer">
+              <input
+                type="checkbox"
+                className="toggle toggle-primary"
+                checked={showNoteVariants}
+                onChange={() => setShowNoteVariants((p) => !p)}
+              />
+              <span className="select-none">show note variants</span>
+            </label>
+            <label className="flex items-center gap-4 cursor-pointer">
+              <input
+                type="checkbox"
+                className="toggle toggle-primary"
+                checked={showAllNotes}
+                onChange={() => setShowAllNotes((p) => !p)}
+              />
+              <span className="select-none">show all notes</span>
+            </label>
+          </div>
         </div>
       </section>
-      <section className="py-5">
-        <Partition
-          partition={scale.prologue}
-          showVariants={showNoteVariants}
-          partitionName={"before the root note"}
-        />
+      <div className="border border-neutral opacity-30" />
+      <section className="flex flex-col gap-8">
+        {showAllNotes ? (
+          <Partition
+            partition={scale.prologue}
+            showVariants={showNoteVariants}
+            partitionName={"before the root note:"}
+          />
+        ) : null}
         <Partition
           partition={scale.core}
           showVariants={showNoteVariants}
-          partitionName={"core scale"}
+          partitionName="core scale:"
         />
-        <Partition
-          partition={scale.epilogue}
-          showVariants={showNoteVariants}
-          partitionName={"after the first octave"}
-        />
+        {showAllNotes ? (
+          <Partition
+            partition={scale.epilogue}
+            showVariants={showNoteVariants}
+            partitionName={"after the first octave:"}
+          />
+        ) : null}
       </section>
-    </>
+    </div>
   );
 }
