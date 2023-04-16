@@ -1,9 +1,10 @@
 "use client";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { twMerge as tm } from "tailwind-merge";
 import { transitionProperties } from "@/utils/styleHelpers";
 import { Chango } from "next/font/google";
+import avocado from "./avocado.png";
+import Image from "next/image";
 
 const font = Chango({
   subsets: ["latin"],
@@ -55,9 +56,9 @@ export default function Header() {
         transitionProperty: "top",
       }}
     >
-      <div className="mx-14">
+      <div className="mx-10 flex items-center gap-1">
+        <Image src={avocado} alt="avocado ocarina" width={50} />
         <h1 className={tm("text-4xl text-primary select-none", font.className)}>
-          {/* <Link href="/">guacarina</Link> */}
           guacarina
         </h1>
       </div>

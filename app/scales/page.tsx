@@ -15,6 +15,8 @@ import { usePathname, useSearchParams } from "next/navigation";
 import Dialog, { useDialogControls } from "@/comps/Dialog";
 import Swiper from "@/comps/Swiper";
 import Ocarina from "./Ocarina";
+import Metronome from "./Metronome";
+import Control from "./Control";
 
 type ScalePattern = "major" | "minor";
 interface SearchParams {
@@ -75,9 +77,8 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
 
   return (
     <div className="flex flex-col gap-5 my-4">
-      <span className="text-sm italic">learn your ocarina scales in style</span>
       <section className="flex flex-col gap-6">
-        <div className="flex gap-2 flex-wrap">
+        <div className="sm:flex gap-2 flex-wrap hidden">
           {majorGenericScales.map((scale, index) => {
             return (
               <button
@@ -93,8 +94,26 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
             );
           })}
         </div>
-        <div className="flex gap-8 flex-wrap">
-          <div>
+        <div className="dropdown sm:hidden">
+          <label tabIndex={0} className="btn m-1">
+            choose scale
+          </label>
+          <ul
+            tabIndex={0}
+            className="dropdown-content border-2 border-base-300 menu p-2 shadow bg-base-100 rounded-box w-52"
+          >
+            {majorGenericScales.map((scale, index) => {
+              return (
+                <li key={index} onClick={() => setScaleRootIndex(index)}>
+                  <a>{formatFullNote({ note: scale.root })}</a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+        <div className="flex gap-6 flex-wrap">
+          <Metronome />
+          <Control>
             <label className="flex items-center gap-4 mb-2 cursor-pointer">
               <input
                 type="radio"
@@ -113,8 +132,8 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
               />
               <span className="select-none">minor scale</span>
             </label>
-          </div>
-          <div>
+          </Control>
+          <Control>
             <label className="flex items-center gap-4 mb-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -133,8 +152,8 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
               />
               <span className="select-none">show all notes</span>
             </label>
-          </div>
-          <button className="btn btn-primary" onClick={() => show()}>
+          </Control>
+          <button className="btn" onClick={() => show()}>
             open large view
           </button>
         </div>
