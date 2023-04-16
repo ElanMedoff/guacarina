@@ -11,7 +11,7 @@ echo "" > $LOG
 
 cd $DIR
 echo "running npm install..." >> $LOG
-$NPM install >> $LOG 2>&1
+$NPM install --force >> $LOG 2>&1
 echo "ran npm install" >> $LOG
 
 echo "rebuilding..." >> $LOG
