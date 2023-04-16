@@ -47,7 +47,7 @@ export default function Header() {
   return (
     <nav
       className={tm(
-        "fixed left-0 z-10 py-3 border-b-2 border-neutral bg-base-100 w-full",
+        "fixed left-0 py-3 border-b-2 border-neutral bg-base-100 w-full",
         scrollDir === "up" ? "top-0" : "top-[-100px]"
       )}
       style={{

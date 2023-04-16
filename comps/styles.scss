@@ -1,0 +1,35 @@
+.swiper {
+  /* border: 5px solid green; */
+}
+
+.swiper-slide {
+  /* border: 5px solid red; */
+  padding: 40px;
+  padding-bottom: 60px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-slide > * {
+  /* border: 5px solid blue; */
+}
+
+.swiper-button-disabled {
+  @apply text-neutral;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  @apply text-primary;
+}
+
+.swiper-pagination-bullet,
+.swiper-pagination-bullet-active {
+  @apply bg-primary;
+}
+
+.swiper-pagination-bullet-disabled {
+  @apply bg-neutral;
+}

@@ -12,6 +12,9 @@ import {
 } from "@/utils/genericNotes";
 import { twMerge as tm } from "tailwind-merge";
 import { usePathname, useSearchParams } from "next/navigation";
+import Dialog, { useDialogControls } from "@/comps/Dialog";
+import Swiper from "@/comps/Swiper";
+import Ocarina from "./Ocarina";
 
 type ScalePattern = "major" | "minor";
 interface SearchParams {
@@ -22,6 +25,7 @@ interface SearchParams {
 }
 
 export default function Home({ searchParams }: { searchParams: SearchParams }) {
+  const { isOpen, close, show } = useDialogControls();
   const {
     root,
     pattern: patternParam,
@@ -84,12 +88,12 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
                 key={index}
                 onClick={() => setScaleRootIndex(index)}
               >
-                {formatFullNote(scale.root)}
+                {formatFullNote({ note: scale.root })}
               </button>
             );
           })}
         </div>
-        <div className="flex gap-20">
+        <div className="flex gap-8 flex-wrap">
           <div>
             <label className="flex items-center gap-4 mb-2 cursor-pointer">
               <input
@@ -130,6 +134,9 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
               <span className="select-none">show all notes</span>
             </label>
           </div>
+          <button className="btn btn-primary" onClick={() => show()}>
+            open large view
+          </button>
         </div>
       </section>
       <div className="border border-neutral opacity-30" />
@@ -138,22 +145,34 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
           <Partition
             partition={scale.prologue}
             showVariants={showNoteVariants}
-            partitionName={"before the root note:"}
           />
         ) : null}
-        <Partition
-          partition={scale.core}
-          showVariants={showNoteVariants}
-          partitionName="core scale:"
-        />
+        <Partition partition={scale.core} showVariants={showNoteVariants} />
         {showAllNotes ? (
           <Partition
             partition={scale.epilogue}
             showVariants={showNoteVariants}
-            partitionName={"after the first octave:"}
           />
         ) : null}
       </section>
+      <Dialog isOpen={isOpen} onDismiss={close}>
+        <Swiper>
+          {scale.core.map((ocarinaNote, index) => {
+            return (
+              <div key={index} className="w-[500px] flex flex-col items-center">
+                <span className="text-6xl">
+                  {formatFullNote({
+                    note: ocarinaNote.note,
+                    octave: ocarinaNote.octave,
+                    octaveStyles: "text-4xl",
+                  })}
+                </span>
+                <Ocarina configuration={ocarinaNote.variants[0]} />
+              </div>
+            );
+          })}
+        </Swiper>
+      </Dialog>
     </div>
   );
 }

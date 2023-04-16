@@ -1,5 +1,6 @@
 import { Scale } from "./genericScales";
 import { isExisty, toLowerCase } from "./helpers";
+import { OcarinaNote } from "./ocarinaNotes";
 
 export type Letter = "C" | "D" | "E" | "F" | "G" | "A" | "B";
 export type Modifier = "SHARP" | "FLAT";
@@ -102,15 +103,47 @@ export function prettifyModifier(note: Note) {
   return note.modifier === "SHARP" ? "#" : "♭";
 }
 
-export function formatFullNote(note: Note) {
-  if (!note.modifier) return note.letter;
+export function formatFullNote({
+  note,
+  octave,
+  octaveStyles = "text-sm",
+}: {
+  note: Note;
+  octave?: number;
+  octaveStyles?: string;
+}) {
+  const renderOctave = () => {
+    return (
+      <>
+        {isExisty(octave) ? (
+          <span className={octaveStyles}>{octave + 4}</span>
+        ) : (
+          ""
+        )}
+      </>
+    );
+  };
+  if (!note.modifier)
+    return (
+      <>
+        {note.letter}
+        {renderOctave()}
+      </>
+    );
 
   const sharp = flatToSharp(note);
   const flat = sharpToFlat(note);
 
-  return `${sharp.letter}${prettifyModifier(sharp)} / ${
-    flat.letter
-  }${prettifyModifier(flat)}`;
+  console.log({ octave });
+  return (
+    <>
+      {sharp.letter}
+      {prettifyModifier(sharp)}
+      {renderOctave()} / {flat.letter}
+      {prettifyModifier(flat)}
+      {renderOctave()}
+    </>
+  );
 }
 
 export type ParamNote =
