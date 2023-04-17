@@ -5,8 +5,12 @@ import Wrapper from "@/app/Wrapper";
 import { Nunito } from "next/font/google";
 
 export const metadata = {
-  title: "",
-  description: "",
+  openGraph: {
+    title: "Guacarina",
+    url: "https://guacarina.com",
+    locale: "en-US",
+    type: "website",
+  },
 };
 
 const font = Nunito({
