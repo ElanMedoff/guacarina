@@ -101,15 +101,15 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
             );
           })}
         </div>
-        <div className="dropdown sm:hidden m-auto md:m-none">
-          <button className="btn" onClick={() => setIsListOpen((p) => !p)}>
+        <div className="dropdown sm:hidden md:m-none w-full">
+          <button
+            className="btn m-l-auto"
+            onClick={() => setIsListOpen((p) => !p)}
+          >
             choose scale
           </button>
           {isListOpen ? (
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-full border-2 border-base-300"
-            >
+            <ul className="menu p-2 shadow bg-base-100 rounded-box border-2 border-base-300 w-full">
               {majorGenericScales.map((scale, index) => {
                 return (
                   <li
@@ -126,7 +126,7 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
             </ul>
           ) : null}
         </div>
-        <div className="flex gap-6 flex-wrap justify-center md:justify-start">
+        <div className="flex gap-6 flex-wrap">
           <Metronome bpm={bpm} setBpm={setBpm} />
           <Control>
             <label className="flex items-center gap-4 mb-2 cursor-pointer">

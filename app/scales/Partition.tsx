@@ -13,7 +13,7 @@ export default function Partition({ partition, showVariants }: Props) {
   if (partition.length === 0) return null;
 
   return (
-    <ul className="flex flex-wrap">
+    <ul className="flex flex-wrap gap-4">
       {partition.map((ocarinaNote) => {
         return (
           <ul
