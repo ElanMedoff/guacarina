@@ -8,6 +8,18 @@ export const metadata = {
   openGraph: {
     title: "Guacarina",
     url: "https://guacarina.com",
+    images: [
+      {
+        url: "https://guacarina.com/landscape.png",
+        width: 1024,
+        height: 787,
+      },
+      {
+        url: "https://nextjs.org/landscape-wide.png",
+        width: 1024,
+        height: 512,
+      },
+    ],
     locale: "en-US",
     type: "website",
   },
