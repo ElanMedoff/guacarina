@@ -1,7 +1,7 @@
-import "./globals.css";
-import Footer from "./Footer";
-import Header from "./Header";
-import Wrapper from "./Wrapper";
+import "@/app/globals.css";
+import Footer from "@/app/Footer";
+import Header from "@/app/Header";
+import Wrapper from "@/app/Wrapper";
 import { Nunito } from "next/font/google";
 
 export const metadata = {

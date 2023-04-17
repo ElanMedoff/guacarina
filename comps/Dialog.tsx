@@ -5,15 +5,14 @@ import {
 } from "@reach/dialog";
 import "@reach/dialog/styles.css";
 import { ReactNode, useCallback, useState } from "react";
+import "./Dialog.scss";
 
 export default function MyDialog(
   props: DialogOverlayProps & { children: ReactNode }
 ) {
   return (
     <DialogOverlay {...props}>
-      <DialogContent style={{ borderRadius: "0.5rem" }}>
-        {props.children}
-      </DialogContent>
+      <DialogContent>{props.children}</DialogContent>
     </DialogOverlay>
   );
 }

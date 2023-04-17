@@ -134,7 +134,6 @@ export function formatFullNote({
   const sharp = flatToSharp(note);
   const flat = sharpToFlat(note);
 
-  console.log({ octave });
   return (
     <>
       {sharp.letter}
@@ -171,7 +170,6 @@ export function genericNoteToParamNote({ letter, modifier }: Note): ParamNote {
 
 export function paramNoteToIndex(paramNote: ParamNote, genericScales: Scale[]) {
   const genericNote = paramNoteToGenericNote(paramNote);
-  console.log({ genericNote });
   return genericScales.findIndex((scale) =>
     areNotesEqual(scale.root, genericNote)
   );

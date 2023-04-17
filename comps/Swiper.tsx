@@ -4,7 +4,7 @@ import { Navigation, Pagination, Mousewheel, Keyboard } from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "./styles.scss";
+import "./Swiper.scss";
 
 export default function App({ children }: { children: ReactNode[] }) {
   return (

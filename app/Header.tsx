@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { twMerge as tm } from "tailwind-merge";
 import { transitionProperties } from "@/utils/styleHelpers";
 import { Chango } from "next/font/google";
-import avocado from "./avocado.png";
+import avocado from "@/app/avocado.png";
 import Image from "next/image";
 
 const font = Chango({
@@ -48,7 +48,7 @@ export default function Header() {
   return (
     <nav
       className={tm(
-        "fixed left-0 py-3 border-b-2 border-neutral bg-base-100 w-full",
+        "fixed left-0 z-2 py-3 border-b-2 border-neutral bg-base-100 w-full",
         scrollDir === "up" ? "top-0" : "top-[-100px]"
       )}
       style={{
@@ -56,9 +56,9 @@ export default function Header() {
         transitionProperty: "top",
       }}
     >
-      <div className="mx-10 flex items-center gap-1">
-        <Image src={avocado} alt="avocado ocarina" width={50} />
-        <h1 className={tm("text-4xl text-primary select-none", font.className)}>
+      <div className="md:mx-10 flex items-center gap-3 justify-center md:justify-start">
+        <Image src={avocado} alt="avocado ocarina" width={30} />
+        <h1 className={tm("text-4xl text-neutral select-none", font.className)}>
           guacarina
         </h1>
       </div>

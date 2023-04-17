@@ -1,19 +1,21 @@
 import { useInterval } from "@/hooks/useInterval";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   AiOutlinePlayCircle as PlayIcon,
   AiOutlinePauseCircle as PauseIcon,
-  AiOutlineArrowUp as ArrowUpIcon,
-  AiOutlineArrowDown as ArrowDownIcon,
 } from "react-icons/ai";
-import Control from "./Control";
-import "./Metronome.styles.scss";
+import Control from "@/app/scales/Control";
 
-export default function Metronome() {
+export default function Metronome({
+  bpm,
+  setBpm,
+}: {
+  bpm: number;
+  setBpm: Dispatch<SetStateAction<number>>;
+}) {
   const minBpm = 10;
   const maxBpm = 400;
   const [isPlaying, setIsPlaying] = useState(false);
-  const [bpm, setBpm] = useState(100);
   const [sound, setSound] = useState<AudioBuffer | null>(null);
 
   useEffect(() => {
@@ -56,41 +58,13 @@ export default function Metronome() {
             <input
               type="number"
               placeholder="beats per minute"
-              className="input input-bordered w-20"
+              className="input input-bordered w-28"
               min={minBpm}
               max={maxBpm}
               value={bpm}
               step={step}
-              disabled
+              onChange={(e) => setBpm(parseInt(e.target.value))}
             />
-            <div className="flex flex-col">
-              <button className="border-2 border-base-300 p-1 rounded-t-lg hover:text-primary">
-                <ArrowUpIcon
-                  size={16}
-                  onClick={() =>
-                    setBpm((p) => {
-                      if (p <= maxBpm - step) {
-                        return p + step;
-                      }
-                      return p;
-                    })
-                  }
-                />
-              </button>
-              <button className="border-2 border-t-0 border-base-300 p-1 rounded-b-lg hover:text-primary">
-                <ArrowDownIcon
-                  size={16}
-                  onClick={() =>
-                    setBpm((p) => {
-                      if (p >= minBpm + step) {
-                        return p - step;
-                      }
-                      return p;
-                    })
-                  }
-                />
-              </button>
-            </div>
           </div>
         </article>
       </div>

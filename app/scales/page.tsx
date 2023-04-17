@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Partition from "./Partition";
+import Partition from "@/app/scales/Partition";
 import { majorGenericScales } from "@/utils/genericScales";
 import { majorOcarinaScales, minorOcarinaScales } from "@/utils/ocarinaScales";
 import {
@@ -14,9 +14,10 @@ import { twMerge as tm } from "tailwind-merge";
 import { usePathname, useSearchParams } from "next/navigation";
 import Dialog, { useDialogControls } from "@/comps/Dialog";
 import Swiper from "@/comps/Swiper";
-import Ocarina from "./Ocarina";
-import Metronome from "./Metronome";
-import Control from "./Control";
+import Ocarina from "@/app/scales/Ocarina";
+import Metronome from "@/app/scales/Metronome";
+import Control from "@/app/scales/Control";
+import { isExisty } from "@/utils/helpers";
 
 type ScalePattern = "major" | "minor";
 interface SearchParams {
@@ -24,19 +25,23 @@ interface SearchParams {
   pattern?: ScalePattern;
   variants?: "0" | "1";
   all?: "0" | "1";
+  bpm: `${number}`;
 }
 
 export default function Home({ searchParams }: { searchParams: SearchParams }) {
+  const [isListOpen, setIsListOpen] = useState(false);
   const { isOpen, close, show } = useDialogControls();
   const {
     root,
     pattern: patternParam,
     variants: variantsParam,
     all: allParam,
+    bpm: bpmParam,
   } = searchParams;
 
   const clientSearchParams = useSearchParams();
   const pathname = usePathname();
+  const [bpm, setBpm] = useState(isExisty(bpmParam) ? parseInt(bpmParam) : 100);
   const [scaleRootIndex, setScaleRootIndex] = useState<number>(
     root ? paramNoteToIndex(root, majorGenericScales) : 0
   );
@@ -64,6 +69,7 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
     params.set("pattern", scalePattern);
     params.set("variants", showNoteVariants ? "1" : "0");
     params.set("all", showAllNotes ? "1" : "0");
+    params.set("bpm", bpm.toString());
 
     window.history.pushState(undefined, "", `${pathname}?${params.toString()}`);
   }, [
@@ -73,6 +79,7 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
     scaleRootIndex,
     showAllNotes,
     showNoteVariants,
+    bpm,
   ]);
 
   return (
@@ -94,25 +101,33 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
             );
           })}
         </div>
-        <div className="dropdown sm:hidden">
-          <label tabIndex={0} className="btn m-1">
+        <div className="dropdown sm:hidden m-auto md:m-none">
+          <button className="btn" onClick={() => setIsListOpen((p) => !p)}>
             choose scale
-          </label>
-          <ul
-            tabIndex={0}
-            className="dropdown-content border-2 border-base-300 menu p-2 shadow bg-base-100 rounded-box w-52"
-          >
-            {majorGenericScales.map((scale, index) => {
-              return (
-                <li key={index} onClick={() => setScaleRootIndex(index)}>
-                  <a>{formatFullNote({ note: scale.root })}</a>
-                </li>
-              );
-            })}
-          </ul>
+          </button>
+          {isListOpen ? (
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-full border-2 border-base-300"
+            >
+              {majorGenericScales.map((scale, index) => {
+                return (
+                  <li
+                    key={index}
+                    onClick={() => {
+                      setScaleRootIndex(index);
+                      setIsListOpen(false);
+                    }}
+                  >
+                    <a>{formatFullNote({ note: scale.root })}</a>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : null}
         </div>
-        <div className="flex gap-6 flex-wrap">
-          <Metronome />
+        <div className="flex gap-6 flex-wrap justify-center md:justify-start">
+          <Metronome bpm={bpm} setBpm={setBpm} />
           <Control>
             <label className="flex items-center gap-4 mb-2 cursor-pointer">
               <input
