@@ -97,7 +97,7 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
   ]);
 
   return (
-    <div className="flex flex-col gap-5 my-4">
+    <div className="flex flex-col gap-5 pt-4 pb-16">
       <Panel className="md:hidden p-2 pb-0">
         <label className="swap swap-rotate text-primary ">
           <input type="checkbox" onChange={() => setIsListOpen((p) => !p)} />
