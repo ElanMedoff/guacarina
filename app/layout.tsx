@@ -5,10 +5,12 @@ import Wrapper from "@/app/Wrapper";
 import { Nunito } from "next/font/google";
 
 export const metadata = {
+  title: "guacarina",
+  description: "Practice your ocarina scales with a side of guac",
   openGraph: {
-    title: "Guacarina",
+    title: "guacarina",
     url: "https://guacarina.com",
-    description: "Practice your ocarina scales with a side of guac.",
+    description: "Practice your ocarina scales with a side of guac",
     images: [
       {
         url: "https://guacarina.com/landscape.png",
