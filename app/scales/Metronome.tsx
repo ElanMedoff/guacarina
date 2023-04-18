@@ -4,7 +4,7 @@ import {
   AiOutlinePlayCircle as PlayIcon,
   AiOutlinePauseCircle as PauseIcon,
 } from "react-icons/ai";
-import Control from "@/app/scales/Control";
+import Panel from "@/app/scales/Panel";
 
 export default function Metronome({
   bpm,
@@ -45,7 +45,7 @@ export default function Metronome({
 
   const step = 5;
   return (
-    <Control>
+    <Panel>
       <div className="flex flex-col gap-2">
         <h3 className="text-lg">metronome</h3>
         <article className="flex items-center gap-4">
@@ -57,17 +57,34 @@ export default function Metronome({
           <div className="flex items-center gap-1">
             <input
               type="number"
-              placeholder="beats per minute"
+              placeholder="bpm"
               className="input input-bordered w-28"
               min={minBpm}
               max={maxBpm}
               value={bpm}
               step={step}
-              onChange={(e) => setBpm(parseInt(e.target.value))}
+              onChange={(e) => {
+                setBpm(parseInt(e.target.value));
+              }}
+              onBlur={(e) => {
+                const parsed = parseInt(e.target.value);
+                if (Number.isNaN(parsed)) {
+                  setBpm(minBpm);
+                  return;
+                }
+                if (parsed < minBpm) {
+                  setBpm(minBpm);
+                  return;
+                }
+                if (parsed > maxBpm) {
+                  setBpm(maxBpm);
+                  return;
+                }
+              }}
             />
           </div>
         </article>
       </div>
-    </Control>
+    </Panel>
   );
 }

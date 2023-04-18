@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import Partition from "@/app/scales/Partition";
 import { majorGenericScales } from "@/utils/genericScales";
@@ -16,8 +17,14 @@ import Dialog, { useDialogControls } from "@/comps/Dialog";
 import Swiper from "@/comps/Swiper";
 import Ocarina from "@/app/scales/Ocarina";
 import Metronome from "@/app/scales/Metronome";
-import Control from "@/app/scales/Control";
+import Panel from "@/app/scales/Panel";
 import { isExisty } from "@/utils/helpers";
+import {
+  AiOutlineEye as EyeOpen,
+  AiOutlineEyeInvisible as EyeClose,
+} from "react-icons/ai";
+import Border from "./Border";
+import { useWindowWidth } from "@/hooks/useWindowWidth";
 
 type ScalePattern = "major" | "minor";
 interface SearchParams {
@@ -29,7 +36,14 @@ interface SearchParams {
 }
 
 export default function Home({ searchParams }: { searchParams: SearchParams }) {
-  const [isListOpen, setIsListOpen] = useState(false);
+  const [isListOpen, setIsListOpen] = useState(true);
+  const windowWidth = useWindowWidth();
+
+  useEffect(() => {
+    const isMobile = windowWidth === undefined ? false : windowWidth <= 768;
+    setIsListOpen(!isMobile);
+  }, [windowWidth]);
+
   const { isOpen, close, show } = useDialogControls();
   const {
     root,
@@ -84,96 +98,81 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
 
   return (
     <div className="flex flex-col gap-5 my-4">
-      <section className="flex flex-col gap-6">
-        <div className="sm:flex gap-2 flex-wrap hidden">
-          {majorGenericScales.map((scale, index) => {
-            return (
-              <button
-                className={tm(
-                  "btn btn-primary w-24",
-                  scaleRootIndex !== index && "btn-outline"
-                )}
-                key={index}
-                onClick={() => setScaleRootIndex(index)}
-              >
-                {formatFullNote({ note: scale.root })}
-              </button>
-            );
-          })}
-        </div>
-        <div className="dropdown sm:hidden md:m-none w-full">
-          <button
-            className="btn m-l-auto"
-            onClick={() => setIsListOpen((p) => !p)}
-          >
-            choose scale
-          </button>
-          {isListOpen ? (
-            <ul className="menu p-2 shadow bg-base-100 rounded-box border-2 border-base-300 w-full">
-              {majorGenericScales.map((scale, index) => {
-                return (
-                  <li
-                    key={index}
-                    onClick={() => {
-                      setScaleRootIndex(index);
-                      setIsListOpen(false);
-                    }}
-                  >
-                    <a>{formatFullNote({ note: scale.root })}</a>
-                  </li>
-                );
-              })}
-            </ul>
-          ) : null}
-        </div>
-        <div className="flex gap-6 flex-wrap">
-          <Metronome bpm={bpm} setBpm={setBpm} />
-          <Control>
-            <label className="flex items-center gap-4 mb-2 cursor-pointer">
-              <input
-                type="radio"
-                className="radio radio-primary"
-                checked={scalePattern === "major"}
-                onChange={() => setScalePattern("major")}
-              />
-              <span className="select-none">major scale</span>
-            </label>
-            <label className="flex items-center gap-4 cursor-pointer">
-              <input
-                type="radio"
-                className="radio radio-primary"
-                checked={scalePattern === "minor"}
-                onChange={() => setScalePattern("minor")}
-              />
-              <span className="select-none">minor scale</span>
-            </label>
-          </Control>
-          <Control>
-            <label className="flex items-center gap-4 mb-2 cursor-pointer">
-              <input
-                type="checkbox"
-                className="toggle toggle-primary"
-                checked={showNoteVariants}
-                onChange={() => setShowNoteVariants((p) => !p)}
-              />
-              <span className="select-none">show note variants</span>
-            </label>
-            <label className="flex items-center gap-4 cursor-pointer">
-              <input
-                type="checkbox"
-                className="toggle toggle-primary"
-                checked={showAllNotes}
-                onChange={() => setShowAllNotes((p) => !p)}
-              />
-              <span className="select-none">show all notes</span>
-            </label>
-          </Control>
-          <button className="btn" onClick={() => show()}>
-            open large view
-          </button>
-        </div>
-      </section>
-      <div className="border border-neutral opacity-30" />
+      <Panel className="md:hidden p-2 pb-0">
+        <label className="swap swap-rotate text-primary ">
+          <input type="checkbox" onChange={() => setIsListOpen((p) => !p)} />
+          <EyeOpen className="swap-off" size={50} />
+          <EyeClose className="swap-on" size={50} />
+        </label>
+      </Panel>
+      {isListOpen ? <Border className="md:hidden" /> : null}
+      {isListOpen ? (
+        <section className="flex flex-col gap-6">
+          <div className="flex gap-2 flex-wrap">
+            {majorGenericScales.map((scale, index) => {
+              return (
+                <button
+                  className={tm(
+                    "btn btn-primary w-24",
+                    scaleRootIndex !== index && "btn-outline"
+                  )}
+                  key={index}
+                  onClick={() => setScaleRootIndex(index)}
+                >
+                  {formatFullNote({ note: scale.root })}
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex gap-6 flex-wrap">
+            <Metronome bpm={bpm} setBpm={setBpm} />
+            <Panel>
+              <label className="flex items-center gap-4 mb-2 cursor-pointer">
+                <input
+                  type="radio"
+                  className="radio radio-primary"
+                  checked={scalePattern === "major"}
+                  onChange={() => setScalePattern("major")}
+                />
+                <span className="select-none">major scale</span>
+              </label>
+              <label className="flex items-center gap-4 cursor-pointer">
+                <input
+                  type="radio"
+                  className="radio radio-primary"
+                  checked={scalePattern === "minor"}
+                  onChange={() => setScalePattern("minor")}
+                />
+                <span className="select-none">minor scale</span>
+              </label>
+            </Panel>
+            <Panel>
+              <label className="flex items-center gap-4 mb-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="toggle toggle-primary"
+                  checked={showNoteVariants}
+                  onChange={() => setShowNoteVariants((p) => !p)}
+                />
+                <span className="select-none">show note variants</span>
+              </label>
+              <label className="flex items-center gap-4 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="toggle toggle-primary"
+                  checked={showAllNotes}
+                  onChange={() => setShowAllNotes((p) => !p)}
+                />
+                <span className="select-none">show all notes</span>
+              </label>
+            </Panel>
+            <button className="btn" onClick={() => show()}>
+              open large view
+            </button>
+          </div>
+        </section>
+      ) : null}
+      <Border />
       <section className="flex flex-col gap-8">
         {showAllNotes ? (
           <Partition

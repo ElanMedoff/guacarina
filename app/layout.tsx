@@ -8,6 +8,7 @@ export const metadata = {
   openGraph: {
     title: "Guacarina",
     url: "https://guacarina.com",
+    description: "Practice your ocarina scales with a side of guac.",
     images: [
       {
         url: "https://guacarina.com/landscape.png",
