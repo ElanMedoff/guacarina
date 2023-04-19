@@ -3,6 +3,7 @@ import Footer from "@/app/Footer";
 import Header from "@/app/Header";
 import Wrapper from "@/app/Wrapper";
 import { Nunito } from "next/font/google";
+import Script from "next/script";
 
 export const metadata = {
   title: "guacarina",
@@ -40,6 +41,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-69GTWHH8FQ"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-69GTWHH8FQ');
+        `}
+      </Script>
       <body data-theme="garden bg-base-100" className={font.className}>
         <Header />
         <Wrapper>{children}</Wrapper>

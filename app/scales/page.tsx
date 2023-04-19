@@ -40,7 +40,7 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
   const windowWidth = useWindowWidth();
 
   useEffect(() => {
-    const isMobile = windowWidth === undefined ? false : windowWidth <= 768;
+    const isMobile = windowWidth === undefined ? false : windowWidth <= 640;
     setIsListOpen(!isMobile);
   }, [windowWidth]);
 
@@ -98,14 +98,14 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
 
   return (
     <div className="flex flex-col gap-5 pt-4 pb-16">
-      <Panel className="md:hidden p-2 pb-0">
+      <Panel className="sm:hidden p-2 pb-0">
         <label className="swap swap-rotate text-primary ">
           <input type="checkbox" onChange={() => setIsListOpen((p) => !p)} />
           <EyeOpen className="swap-off" size={50} />
           <EyeClose className="swap-on" size={50} />
         </label>
       </Panel>
-      {isListOpen ? <Border className="md:hidden" /> : null}
+      {isListOpen ? <Border className="sm:hidden" /> : null}
       {isListOpen ? (
         <section className="flex flex-col gap-6">
           <div className="flex gap-2 flex-wrap">
