@@ -66,7 +66,7 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
     variantsParam ? Boolean(parseInt(variantsParam)) : false
   );
   const [showAllNotes, setShowAllNotes] = useState(
-    allParam ? Boolean(parseInt(allParam)) : false
+    allParam ? Boolean(parseInt(allParam)) : true
   );
   const scale =
     scalePattern === "major"
