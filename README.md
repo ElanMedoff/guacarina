@@ -1,4 +1,4 @@
-# [guacarina](guacarina.com)
+# [guacarina](https://guacarina.com)
 
 Practice your ocarina scales with a side of guac
 
