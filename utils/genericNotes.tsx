@@ -106,7 +106,7 @@ export function prettifyModifier(note: Note) {
 export function formatFullNote({
   note,
   octave,
-  octaveStyles = "text-sm",
+  octaveStyles = "text-xs",
 }: {
   note: Note;
   octave?: number;

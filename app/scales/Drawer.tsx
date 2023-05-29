@@ -1,42 +1,56 @@
 import "@reach/dialog/styles.css";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { twMerge as tm } from "tailwind-merge";
 import {
   MdKeyboardArrowLeft as ArrowLeftIcon,
   MdKeyboardArrowRight as ArrowRightIcon,
 } from "react-icons/md";
+import { motion, useAnimationControls, Variants } from "framer-motion";
 
 export default function Drawer({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(true);
+  const controls = useAnimationControls();
+
+  useEffect(() => {
+    controls.start(isOpen ? "active" : "inactive");
+  }, [isOpen, controls]);
+
+  const variants: Variants = {
+    active: { x: 0 },
+    inactive: { x: 323 },
+  };
 
   return (
-    <div
+    <motion.div
+      variants={variants}
+      animate={controls}
+      initial="active"
       className={tm(
-        "absolute right-0 top-0 bottom-0 m-auto h-max",
-        "flex items-center"
+        "fixed top-0 right-0 bottom-0 m-auto h-max overflow-hidden"
       )}
+      transition={{ type: "spring", damping: 20 }}
     >
-      <button
-        className={tm(
-          "border-4 border-r-0 border-neutral rounded-lg rounded-r-none h-min"
-        )}
-        onClick={() => setIsOpen((p) => !p)}
-      >
-        {isOpen ? (
-          <ArrowRightIcon className="swap-off text-primary" size={60} />
-        ) : (
-          <ArrowLeftIcon className="swap-on text-primary" size={60} />
-        )}
-      </button>
-
-      <div
-        className={tm(
-          isOpen &&
+      <div className="flex items-center">
+        <button
+          className={tm(
+            "border-4 border-r-0 border-neutral rounded-lg rounded-r-none h-min bg-base-100"
+          )}
+          onClick={() => setIsOpen((p) => !p)}
+        >
+          {isOpen ? (
+            <ArrowRightIcon className="swap-off text-primary" size={60} />
+          ) : (
+            <ArrowLeftIcon className="swap-on text-primary" size={60} />
+          )}
+        </button>
+        <div
+          className={tm(
             "p-10 border-4 border-r-0 rounded-r-none border-neutral rounded-lg bg-base-100"
-        )}
-      >
-        {isOpen ? children : null}
+          )}
+        >
+          {children}
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

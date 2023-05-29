@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Partition from "@/app/scales/Partition";
-import { majorGenericScales } from "@/utils/genericScales";
+import { majorGenericScales, minorGenericScales } from "@/utils/genericScales";
 import { majorOcarinaScales, minorOcarinaScales } from "@/utils/ocarinaScales";
 import {
   formatFullNote,
@@ -66,6 +66,10 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
     scalePattern === "major"
       ? majorOcarinaScales[scaleRootIndex]
       : minorOcarinaScales[scaleRootIndex];
+  const genericScale =
+    scalePattern === "major"
+      ? majorGenericScales[scaleRootIndex]
+      : minorGenericScales[scaleRootIndex];
 
   useEffect(() => {
     const params = new URLSearchParams(clientSearchParams);
@@ -91,8 +95,8 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
   ]);
 
   return (
-    <div className="flex flex-col gap-5 pt-4 pb-16">
-      <Border className="sm:hidden" />
+    <div className="flex flex-col gap-6 pt-4 pb-16 overflow-hidden">
+      <p className="italic text-lg">select a scale to get started!</p>
       <section className="flex gap-4 justify-between w-full flex-wrap">
         <div className="flex gap-2 flex-wrap">
           {majorGenericScales.map((scale, index) => {
@@ -115,20 +119,53 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
         </button>
       </section>
       <Border />
-      <section className="flex flex-col gap-8">
-        {showAllNotes ? (
-          <Partition
-            partition={scale.prologue}
-            showVariants={showNoteVariants}
-          />
-        ) : null}
-        <Partition partition={scale.core} showVariants={showNoteVariants} />
-        {showAllNotes ? (
-          <Partition
-            partition={scale.epilogue}
-            showVariants={showNoteVariants}
-          />
-        ) : null}
+      <section className="flex flex-col gap-12">
+        <h3 className="text-5xl m-auto">
+          {formatFullNote({
+            note: genericScale.root,
+          })}{" "}
+          <span className="capitalize">{scalePattern}</span> Scale
+        </h3>
+        <div className="flex flex-col gap-8">
+          {showAllNotes ? (
+            <Partition
+              partition={scale.prologue}
+              showVariants={showNoteVariants}
+            />
+          ) : null}
+          <Partition partition={scale.core} showVariants={showNoteVariants} />
+          {showAllNotes ? (
+            <Partition
+              partition={scale.epilogue}
+              showVariants={showNoteVariants}
+            />
+          ) : null}
+        </div>
+        <div className="border-2 border-neutral rounded-lg w-max m-auto p-4 text-lg text-center">
+          <span className="font-semibold">
+            The{" "}
+            {formatFullNote({
+              note: genericScale.root,
+            })}{" "}
+            <span className="capitalize">{scalePattern}</span> Scale{" "}
+          </span>
+          has the pattern:
+          <div>
+            {scalePattern === "major"
+              ? "Whole - Whole -  Half - Whole - Whole - Whole - Half"
+              : "Whole - Half - Whole - Whole - Half - Whole - Whole"}
+          </div>
+          with the notes{" "}
+          {genericScale.notes.map((note, index) => {
+            return (
+              <Fragment key={index}>
+                {formatFullNote({ note })}
+                {index === genericScale.notes.length - 1 ? "" : ", "}
+                {index === genericScale.notes.length - 2 && "and "}
+              </Fragment>
+            );
+          })}
+        </div>
       </section>
       <Dialog isOpen={isZoomOpen} onDismiss={closeZoom}>
         <Swiper>

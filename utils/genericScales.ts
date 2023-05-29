@@ -5,8 +5,8 @@ export interface Scale {
   notes: Note[];
 }
 
-const majorPattern = [0, 2, 4, 5, 7, 9, 11, 12] as const;
-const minorPattern = [0, 2, 3, 5, 7, 8, 10, 12] as const;
+export const majorPattern = [0, 2, 4, 5, 7, 9, 11, 12] as const;
+export const minorPattern = [0, 2, 3, 5, 7, 8, 10, 12] as const;
 
 const generateScales = (
   pattern: typeof majorPattern | typeof minorPattern

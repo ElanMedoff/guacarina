@@ -6,7 +6,7 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="flex justify-center items-center py-4 text-xs border-t-neutral border-t-2 bg-base-200 gap-6">
+    <footer className="flex justify-center items-center py-4 text-xs bg-base-200 gap-6">
       <span>© guacarina.com</span>
       <div className="flex gap-3">
         <a href="https://github.com/ElanMedoff/guacarina">
