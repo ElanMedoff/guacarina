@@ -9,7 +9,7 @@ export default function Footer() {
     <footer className="flex justify-center items-center py-4 text-xs border-t-neutral border-t-2 bg-base-200 gap-6">
       <span>© guacarina.com</span>
       <div className="flex gap-3">
-        <a href="https://github.com/ElanMedoff">
+        <a href="https://github.com/ElanMedoff/guacarina">
           <GithubIcon size={25} />
         </a>
         <a href="https://www.linkedin.com/in/elan-medoff/">

@@ -19,12 +19,9 @@ import Ocarina from "@/app/scales/Ocarina";
 import Metronome from "@/app/scales/Metronome";
 import Panel from "@/app/scales/Panel";
 import { isExisty } from "@/utils/helpers";
-import {
-  AiOutlineEye as EyeOpen,
-  AiOutlineEyeInvisible as EyeClose,
-} from "react-icons/ai";
+import { MdZoomIn as ZoomIcon } from "react-icons/md";
+
 import Border from "./Border";
-import { useWindowWidth } from "@/hooks/useWindowWidth";
 import Drawer from "./Drawer";
 
 type ScalePattern = "major" | "minor";
@@ -37,14 +34,6 @@ interface SearchParams {
 }
 
 export default function Home({ searchParams }: { searchParams: SearchParams }) {
-  const [isListOpen, setIsListOpen] = useState(true);
-  const windowWidth = useWindowWidth();
-
-  useEffect(() => {
-    const isMobile = windowWidth === undefined ? false : windowWidth <= 640;
-    setIsListOpen(!isMobile);
-  }, [windowWidth]);
-
   const {
     isOpen: isZoomOpen,
     close: closeZoom,
@@ -103,34 +92,28 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
 
   return (
     <div className="flex flex-col gap-5 pt-4 pb-16">
-      <Panel className="sm:hidden p-2 pb-0">
-        <label className="swap swap-rotate text-primary ">
-          <input type="checkbox" onChange={() => setIsListOpen((p) => !p)} />
-          <EyeOpen className="swap-off" size={50} />
-          <EyeClose className="swap-on" size={50} />
-        </label>
-      </Panel>
-      {isListOpen ? <Border className="sm:hidden" /> : null}
-      {isListOpen ? (
-        <section className="flex flex-col gap-6">
-          <div className="flex gap-2 flex-wrap">
-            {majorGenericScales.map((scale, index) => {
-              return (
-                <button
-                  className={tm(
-                    "btn btn-primary w-[90px] text-3xl",
-                    scaleRootIndex !== index && "btn-outline"
-                  )}
-                  key={index}
-                  onClick={() => setScaleRootIndex(index)}
-                >
-                  {formatFullNote({ note: scale.root })}
-                </button>
-              );
-            })}
-          </div>
-        </section>
-      ) : null}
+      <Border className="sm:hidden" />
+      <section className="flex gap-4 justify-between w-full flex-wrap">
+        <div className="flex gap-2 flex-wrap">
+          {majorGenericScales.map((scale, index) => {
+            return (
+              <button
+                className={tm(
+                  "btn btn-primary w-[90px] text-3xl",
+                  scaleRootIndex !== index && "btn-outline"
+                )}
+                key={index}
+                onClick={() => setScaleRootIndex(index)}
+              >
+                {formatFullNote({ note: scale.root })}
+              </button>
+            );
+          })}
+        </div>
+        <button onClick={() => showZoom()}>
+          <ZoomIcon size={60} className="text-neutral" />
+        </button>
+      </section>
       <Border />
       <section className="flex flex-col gap-8">
         {showAllNotes ? (
@@ -208,9 +191,6 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
               <span className="select-none">show all notes</span>
             </label>
           </Panel>
-          {/* <button className="btn" onClick={() => showZoom()}> */}
-          {/*   open large view */}
-          {/* </button> */}
         </div>
       </Drawer>
     </div>
