@@ -5,14 +5,14 @@ import {
 } from "@reach/dialog";
 import "@reach/dialog/styles.css";
 import { ReactNode, useCallback, useState } from "react";
-import "./Dialog.scss";
+import styles from "./Dialog.module.scss";
 
 export default function MyDialog(
   props: DialogOverlayProps & { children: ReactNode }
 ) {
   return (
     <DialogOverlay {...props}>
-      <DialogContent>{props.children}</DialogContent>
+      <DialogContent className={styles.content}>{props.children}</DialogContent>
     </DialogOverlay>
   );
 }

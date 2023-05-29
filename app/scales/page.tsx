@@ -25,6 +25,7 @@ import {
 } from "react-icons/ai";
 import Border from "./Border";
 import { useWindowWidth } from "@/hooks/useWindowWidth";
+import Drawer from "./Drawer";
 
 type ScalePattern = "major" | "minor";
 interface SearchParams {
@@ -44,7 +45,11 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
     setIsListOpen(!isMobile);
   }, [windowWidth]);
 
-  const { isOpen, close, show } = useDialogControls();
+  const {
+    isOpen: isZoomOpen,
+    close: closeZoom,
+    show: showZoom,
+  } = useDialogControls();
   const {
     root,
     pattern: patternParam,
@@ -113,7 +118,7 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
               return (
                 <button
                   className={tm(
-                    "btn btn-primary w-24",
+                    "btn btn-primary w-[90px] text-3xl",
                     scaleRootIndex !== index && "btn-outline"
                   )}
                   key={index}
@@ -123,52 +128,6 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
                 </button>
               );
             })}
-          </div>
-          <div className="flex gap-6 flex-wrap">
-            <Metronome bpm={bpm} setBpm={setBpm} />
-            <Panel>
-              <label className="flex items-center gap-4 mb-2 cursor-pointer">
-                <input
-                  type="radio"
-                  className="radio radio-primary"
-                  checked={scalePattern === "major"}
-                  onChange={() => setScalePattern("major")}
-                />
-                <span className="select-none">major scale</span>
-              </label>
-              <label className="flex items-center gap-4 cursor-pointer">
-                <input
-                  type="radio"
-                  className="radio radio-primary"
-                  checked={scalePattern === "minor"}
-                  onChange={() => setScalePattern("minor")}
-                />
-                <span className="select-none">minor scale</span>
-              </label>
-            </Panel>
-            <Panel>
-              <label className="flex items-center gap-4 mb-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="toggle toggle-primary"
-                  checked={showNoteVariants}
-                  onChange={() => setShowNoteVariants((p) => !p)}
-                />
-                <span className="select-none">show note variants</span>
-              </label>
-              <label className="flex items-center gap-4 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="toggle toggle-primary"
-                  checked={showAllNotes}
-                  onChange={() => setShowAllNotes((p) => !p)}
-                />
-                <span className="select-none">show all notes</span>
-              </label>
-            </Panel>
-            <button className="btn" onClick={() => show()}>
-              open large view
-            </button>
           </div>
         </section>
       ) : null}
@@ -188,7 +147,7 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
           />
         ) : null}
       </section>
-      <Dialog isOpen={isOpen} onDismiss={close}>
+      <Dialog isOpen={isZoomOpen} onDismiss={closeZoom}>
         <Swiper>
           {scale.core.map((ocarinaNote, index) => {
             return (
@@ -206,6 +165,54 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
           })}
         </Swiper>
       </Dialog>
+      <Drawer>
+        <div className="flex flex-col gap-6">
+          <Metronome bpm={bpm} setBpm={setBpm} />
+          <Panel>
+            <label className="flex items-center gap-4 mb-2 cursor-pointer">
+              <input
+                type="radio"
+                className="radio radio-primary"
+                checked={scalePattern === "major"}
+                onChange={() => setScalePattern("major")}
+              />
+              <span className="select-none">major scale</span>
+            </label>
+            <label className="flex items-center gap-4 cursor-pointer">
+              <input
+                type="radio"
+                className="radio radio-primary"
+                checked={scalePattern === "minor"}
+                onChange={() => setScalePattern("minor")}
+              />
+              <span className="select-none">minor scale</span>
+            </label>
+          </Panel>
+          <Panel>
+            <label className="flex items-center gap-4 mb-2 cursor-pointer">
+              <input
+                type="checkbox"
+                className="toggle toggle-primary"
+                checked={showNoteVariants}
+                onChange={() => setShowNoteVariants((p) => !p)}
+              />
+              <span className="select-none">show note variants</span>
+            </label>
+            <label className="flex items-center gap-4 cursor-pointer">
+              <input
+                type="checkbox"
+                className="toggle toggle-primary"
+                checked={showAllNotes}
+                onChange={() => setShowAllNotes((p) => !p)}
+              />
+              <span className="select-none">show all notes</span>
+            </label>
+          </Panel>
+          {/* <button className="btn" onClick={() => showZoom()}> */}
+          {/*   open large view */}
+          {/* </button> */}
+        </div>
+      </Drawer>
     </div>
   );
 }

@@ -134,12 +134,23 @@ export function formatFullNote({
   const sharp = flatToSharp(note);
   const flat = sharpToFlat(note);
 
+  if (
+    areNotesEqual(flat, { letter: "E", modifier: "FLAT" }) ||
+    areNotesEqual(flat, { letter: "B", modifier: "FLAT" })
+  ) {
+    return (
+      <>
+        {flat.letter}
+        {prettifyModifier(flat)}
+        {renderOctave()}
+      </>
+    );
+  }
+
   return (
     <>
       {sharp.letter}
       {prettifyModifier(sharp)}
-      {renderOctave()} / {flat.letter}
-      {prettifyModifier(flat)}
       {renderOctave()}
     </>
   );
