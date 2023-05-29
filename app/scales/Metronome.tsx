@@ -1,18 +1,13 @@
-import { useInterval } from "@/hooks/useInterval";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   AiOutlinePlayCircle as PlayIcon,
   AiOutlinePauseCircle as PauseIcon,
 } from "react-icons/ai";
 import Panel from "@/app/scales/Panel";
+import { useTimer } from "react-use-precision-timer";
 
-export default function Metronome({
-  bpm,
-  setBpm,
-}: {
-  bpm: number;
-  setBpm: Dispatch<SetStateAction<number>>;
-}) {
+export default function Metronome() {
+  const [bpm, setBpm] = useState(100);
   const minBpm = 10;
   const maxBpm = 400;
   const [isPlaying, setIsPlaying] = useState(false);
@@ -34,14 +29,19 @@ export default function Metronome({
     load();
   }, []);
 
-  useInterval(() => {
+  const callback = useCallback(() => {
     if (!isPlaying || !sound) return;
     const ctx = new AudioContext();
     const playSound = ctx.createBufferSource();
     playSound.buffer = sound;
     playSound.connect(ctx.destination);
     playSound.start(ctx.currentTime);
-  }, (60 / bpm) * 1000);
+  }, [isPlaying, sound]);
+
+  const timer = useTimer(
+    { delay: (60 / bpm) * 1000, fireOnStart: true },
+    callback
+  );
 
   const step = 5;
   return (
@@ -50,7 +50,17 @@ export default function Metronome({
         <h3 className="text-lg">metronome</h3>
         <article className="flex items-center gap-4">
           <label className="swap swap-rotate">
-            <input type="checkbox" onChange={() => setIsPlaying((p) => !p)} />
+            <input
+              type="checkbox"
+              onChange={() => {
+                if (isPlaying) {
+                  timer.stop();
+                } else {
+                  timer.isStarted() ? timer.resume() : timer.start();
+                }
+                setIsPlaying((p) => !p);
+              }}
+            />
             <PlayIcon className="swap-off text-primary" size={75} />
             <PauseIcon className="swap-on text-primary" size={75} />
           </label>
@@ -64,10 +74,8 @@ export default function Metronome({
               value={bpm}
               step={step}
               onChange={(e) => {
-                setBpm(parseInt(e.target.value));
-              }}
-              onBlur={(e) => {
                 const parsed = parseInt(e.target.value);
+
                 if (Number.isNaN(parsed)) {
                   setBpm(minBpm);
                   return;
@@ -80,6 +88,8 @@ export default function Metronome({
                   setBpm(maxBpm);
                   return;
                 }
+
+                setBpm(parsed);
               }}
             />
           </div>

@@ -18,7 +18,6 @@ import Swiper from "@/comps/Swiper";
 import Ocarina from "@/app/scales/Ocarina";
 import Metronome from "@/app/scales/Metronome";
 import Panel from "@/app/scales/Panel";
-import { isExisty } from "@/utils/helpers";
 import { MdZoomIn as ZoomIcon } from "react-icons/md";
 
 import Border from "./Border";
@@ -30,7 +29,6 @@ interface SearchParams {
   pattern?: ScalePattern;
   variants?: "0" | "1";
   all?: "0" | "1";
-  bpm: `${number}`;
 }
 
 export default function Home({ searchParams }: { searchParams: SearchParams }) {
@@ -44,12 +42,10 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
     pattern: patternParam,
     variants: variantsParam,
     all: allParam,
-    bpm: bpmParam,
   } = searchParams;
 
   const clientSearchParams = useSearchParams();
   const pathname = usePathname();
-  const [bpm, setBpm] = useState(isExisty(bpmParam) ? parseInt(bpmParam) : 100);
   const [scaleRootIndex, setScaleRootIndex] = useState<number>(
     root ? paramNoteToIndex(root, majorGenericScales) : 0
   );
@@ -81,7 +77,6 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
     params.set("pattern", scalePattern);
     params.set("variants", showNoteVariants ? "1" : "0");
     params.set("all", showAllNotes ? "1" : "0");
-    params.set("bpm", bpm.toString());
 
     window.history.pushState(undefined, "", `${pathname}?${params.toString()}`);
   }, [
@@ -91,12 +86,11 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
     scaleRootIndex,
     showAllNotes,
     showNoteVariants,
-    bpm,
   ]);
 
   return (
     <div className="flex flex-col gap-6 pt-4 pb-16 overflow-hidden">
-      <p className="italic text-lg">select a scale to get started!</p>
+      <p className="italic text-lg">select an ocarina scale to get started!</p>
       <section className="flex gap-4 justify-between w-full flex-wrap">
         <div className="flex gap-2 flex-wrap">
           {majorGenericScales.map((scale, index) => {
@@ -141,7 +135,7 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
             />
           ) : null}
         </div>
-        <div className="border-2 border-neutral rounded-lg w-max m-auto p-4 text-lg text-center">
+        <div className="border-2 border-neutral rounded-lg m-auto p-4 text-lg text-center">
           <span className="font-semibold">
             The{" "}
             {formatFullNote({
@@ -150,11 +144,11 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
             <span className="capitalize">{scalePattern}</span> Scale{" "}
           </span>
           has the pattern:
-          <div>
+          <p className="">
             {scalePattern === "major"
               ? "Whole - Whole -  Half - Whole - Whole - Whole - Half"
               : "Whole - Half - Whole - Whole - Half - Whole - Whole"}
-          </div>
+          </p>
           with the notes{" "}
           {genericScale.notes.map((note, index) => {
             return (
@@ -187,7 +181,7 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
       </Dialog>
       <Drawer>
         <div className="flex flex-col gap-6">
-          <Metronome bpm={bpm} setBpm={setBpm} />
+          <Metronome />
           <Panel>
             <label className="flex items-center gap-4 mb-2 cursor-pointer">
               <input
