@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Fragment, useEffect, useState } from "react";
-import Partition from "@/app/scales/Partition";
+import Partition from "@/app/scales/[root]/Partition";
 import { majorGenericScales, minorGenericScales } from "@/utils/genericScales";
 import { majorOcarinaScales, minorOcarinaScales } from "@/utils/ocarinaScales";
 import {
@@ -9,46 +9,55 @@ import {
   genericNoteToParamNote,
   Letter,
   Modifier,
+  ParamNote,
   paramNoteToIndex,
 } from "@/utils/genericNotes";
 import { twMerge as tm } from "tailwind-merge";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import Dialog, { useDialogControls } from "@/comps/Dialog";
 import Swiper from "@/comps/Swiper";
-import Ocarina from "@/app/scales/Ocarina";
-import Metronome from "@/app/scales/Metronome";
-import Panel from "@/app/scales/Panel";
+import Ocarina from "@/app/scales/[root]/Ocarina";
+import Metronome from "@/app/scales/[root]/Metronome";
+import Panel from "@/app/scales/[root]/Panel";
 import { MdZoomIn as ZoomIcon } from "react-icons/md";
-
-import Border from "./Border";
-import Drawer from "./Drawer";
+import Border from "@/app/scales/[root]/Border";
+import Drawer from "@/app/scales/[root]/Drawer";
 
 type ScalePattern = "major" | "minor";
 interface SearchParams {
-  root?: `${Lowercase<Letter>}_${Lowercase<Modifier>}`;
   pattern?: ScalePattern;
   variants?: "0" | "1";
   all?: "0" | "1";
 }
 
-export default function Home({ searchParams }: { searchParams: SearchParams }) {
+interface Params {
+  root: ParamNote;
+}
+
+export default function Home({
+  searchParams,
+  params,
+}: {
+  searchParams: SearchParams;
+  params: Params;
+}) {
   const {
     isOpen: isZoomOpen,
     close: closeZoom,
     show: showZoom,
   } = useDialogControls();
   const {
-    root,
     pattern: patternParam,
     variants: variantsParam,
     all: allParam,
   } = searchParams;
+  const { root } = params;
 
   const clientSearchParams = useSearchParams();
+  const router = useRouter();
   const pathname = usePathname();
-  const [scaleRootIndex, setScaleRootIndex] = useState<number>(
-    root ? paramNoteToIndex(root, majorGenericScales) : 0
-  );
+  const scaleRootIndex = paramNoteToIndex(root, majorGenericScales);
+
   const [scalePattern, setScalePattern] = useState<ScalePattern>(
     patternParam ?? "major"
   );
@@ -70,15 +79,11 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
   useEffect(() => {
     const params = new URLSearchParams(clientSearchParams);
 
-    params.set(
-      "root",
-      genericNoteToParamNote(majorGenericScales[scaleRootIndex].root)
-    );
     params.set("pattern", scalePattern);
     params.set("variants", showNoteVariants ? "1" : "0");
     params.set("all", showAllNotes ? "1" : "0");
 
-    window.history.pushState(undefined, "", `${pathname}?${params.toString()}`);
+    /* window.history.pushState(undefined, "", `${pathname}?${params.toString()}`); */
   }, [
     clientSearchParams,
     pathname,
@@ -97,11 +102,13 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
             return (
               <button
                 className={tm(
-                  "btn btn-primary w-[90px] text-3xl",
+                  "no-animation btn btn-primary w-[90px] text-3xl",
                   scaleRootIndex !== index && "btn-outline"
                 )}
                 key={index}
-                onClick={() => setScaleRootIndex(index)}
+                onClick={() => {
+                  router.push(`/scales/${genericNoteToParamNote(scale.root)}`);
+                }}
               >
                 {formatFullNote({ note: scale.root })}
               </button>

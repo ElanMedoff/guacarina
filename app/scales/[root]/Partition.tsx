@@ -1,6 +1,6 @@
 import React from "react";
 import { OcarinaNote } from "@/utils/ocarinaNotes";
-import Ocarina from "@/app/scales/Ocarina";
+import Ocarina from "@/app/scales/[root]/Ocarina";
 import { nanoid } from "nanoid";
 import { formatFullNote } from "@/utils/genericNotes";
 

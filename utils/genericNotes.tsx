@@ -158,7 +158,7 @@ export function formatFullNote({
 
 export type ParamNote =
   | `${Lowercase<Letter>}_${Lowercase<Modifier>}`
-  | `${Lowercase<Letter>}_`;
+  | `${Lowercase<Letter>}`;
 
 function paramNoteToGenericNote(paramNote: ParamNote): Note {
   const [lowerLetter, lowerModifier] = paramNote.split("_");
@@ -175,8 +175,10 @@ function paramNoteToGenericNote(paramNote: ParamNote): Note {
   };
 }
 
-export function genericNoteToParamNote({ letter, modifier }: Note): ParamNote {
-  return `${toLowerCase(letter)}_${toLowerCase(modifier ?? "")}`;
+export function genericNoteToParamNote({ letter, modifier }: Note) {
+  return `${toLowerCase(letter)}${modifier ? "_" : ""}${toLowerCase(
+    modifier ?? ""
+  )}` as ParamNote;
 }
 
 export function paramNoteToIndex(paramNote: ParamNote, genericScales: Scale[]) {

@@ -3,7 +3,7 @@ import {
   AiOutlinePlayCircle as PlayIcon,
   AiOutlinePauseCircle as PauseIcon,
 } from "react-icons/ai";
-import Panel from "@/app/scales/Panel";
+import Panel from "@/app/scales/[root]/Panel";
 import { useTimer } from "react-use-precision-timer";
 
 export default function Metronome() {
