@@ -1,6 +1,5 @@
 import { Scale } from "./genericScales";
 import { isExisty, toLowerCase } from "./helpers";
-import { OcarinaNote } from "./ocarinaNotes";
 
 export type Letter = "C" | "D" | "E" | "F" | "G" | "A" | "B";
 export type Modifier = "SHARP" | "FLAT";

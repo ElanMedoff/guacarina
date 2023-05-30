@@ -7,7 +7,12 @@ const nextConfig = {
     return [
       {
         source: "/",
-        destination: "/scales",
+        destination: "/scales/c",
+        permanent: false,
+      },
+      {
+        source: "/scales",
+        destination: "/scales/c",
         permanent: false,
       },
     ];
