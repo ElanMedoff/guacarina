@@ -22,6 +22,7 @@ import Panel from "@/app/scales/[root]/Panel";
 import { MdZoomIn as ZoomIcon } from "react-icons/md";
 import Border from "@/app/scales/[root]/Border";
 import Drawer from "@/app/scales/[root]/Drawer";
+import Link from "next/link";
 
 type ScalePattern = "major" | "minor";
 interface SearchParams {
@@ -100,18 +101,16 @@ export default function Home({
         <div className="flex gap-2 flex-wrap">
           {majorGenericScales.map((scale, index) => {
             return (
-              <button
+              <Link
+                href={`/scales/${genericNoteToParamNote(scale.root)}`}
                 className={tm(
                   "no-animation btn btn-primary w-[90px] text-3xl",
                   scaleRootIndex !== index && "btn-outline"
                 )}
                 key={index}
-                onClick={() => {
-                  router.push(`/scales/${genericNoteToParamNote(scale.root)}`);
-                }}
               >
                 {formatFullNote({ note: scale.root })}
-              </button>
+              </Link>
             );
           })}
         </div>
