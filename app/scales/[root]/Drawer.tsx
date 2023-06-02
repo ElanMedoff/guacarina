@@ -25,7 +25,7 @@ export default function Drawer({ children }: { children: ReactNode }) {
       variants={variants}
       animate={controls}
       initial="active"
-      className={tm("fixed top-0 right-0 bottom-0 m-auto h-max")}
+      className="hidden md:block fixed top-0 right-0 bottom-0 m-auto h-max"
       transition={{ type: "spring", damping: 20 }}
     >
       <div className="flex items-center">

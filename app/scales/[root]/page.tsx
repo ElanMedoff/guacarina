@@ -1,14 +1,12 @@
 "use client";
 
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect } from "react";
 import Partition from "@/app/scales/[root]/Partition";
 import { majorGenericScales, minorGenericScales } from "@/utils/genericScales";
 import { majorOcarinaScales, minorOcarinaScales } from "@/utils/ocarinaScales";
 import {
   formatFullNote,
   genericNoteToParamNote,
-  Letter,
-  Modifier,
   ParamNote,
   paramNoteToIndex,
 } from "@/utils/genericNotes";
@@ -17,57 +15,41 @@ import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import Dialog, { useDialogControls } from "@/comps/Dialog";
 import Swiper from "@/comps/Swiper";
 import Ocarina from "@/app/scales/[root]/Ocarina";
-import Metronome from "@/app/scales/[root]/Metronome";
-import Panel from "@/app/scales/[root]/Panel";
 import { MdZoomIn as ZoomIcon } from "react-icons/md";
 import Border from "@/app/scales/[root]/Border";
-import Drawer from "@/app/scales/[root]/Drawer";
 import Link from "next/link";
-
-type ScalePattern = "major" | "minor";
-interface SearchParams {
-  pattern?: ScalePattern;
-  variants?: "0" | "1";
-  all?: "0" | "1";
-}
+import useFirstRender from "@/hooks/useFirstRender";
+import DrawerContent from "@/app/scales/[root]/DrawerContent";
+import { ControlsContext } from "@/app/scales/[root]/utils";
 
 interface Params {
   root: ParamNote;
 }
 
-export default function Home({
-  searchParams,
-  params,
-}: {
-  searchParams: SearchParams;
-  params: Params;
-}) {
+export default function Home({ params }: { params: Params }) {
   const {
     isOpen: isZoomOpen,
     close: closeZoom,
     show: showZoom,
   } = useDialogControls();
-  const {
-    pattern: patternParam,
-    variants: variantsParam,
-    all: allParam,
-  } = searchParams;
   const { root } = params;
 
   const clientSearchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const firstRender = useFirstRender();
+  const controls = useContext(ControlsContext);
+  const {
+    scalePattern,
+    setScalePattern,
+    setShowAllNotes,
+    setShowNoteVariants,
+    showAllNotes,
+    showNoteVariants,
+  } = controls!;
+
   const scaleRootIndex = paramNoteToIndex(root, majorGenericScales);
 
-  const [scalePattern, setScalePattern] = useState<ScalePattern>(
-    patternParam ?? "major"
-  );
-  const [showNoteVariants, setShowNoteVariants] = useState(
-    variantsParam ? Boolean(parseInt(variantsParam)) : false
-  );
-  const [showAllNotes, setShowAllNotes] = useState(
-    allParam ? Boolean(parseInt(allParam)) : false
-  );
   const scale =
     scalePattern === "major"
       ? majorOcarinaScales[scaleRootIndex]
@@ -78,13 +60,15 @@ export default function Home({
       : minorGenericScales[scaleRootIndex];
 
   useEffect(() => {
+    if (firstRender) return;
+
     const params = new URLSearchParams(clientSearchParams);
 
     params.set("pattern", scalePattern);
     params.set("variants", showNoteVariants ? "1" : "0");
     params.set("all", showAllNotes ? "1" : "0");
 
-    /* window.history.pushState(undefined, "", `${pathname}?${params.toString()}`); */
+    router.push(`${pathname}?${params.toString()}`);
   }, [
     clientSearchParams,
     pathname,
@@ -119,6 +103,19 @@ export default function Home({
         </button>
       </section>
       <Border />
+      <section className="block md:hidden">
+        <DrawerContent
+          scalePattern={scalePattern}
+          setScalePattern={setScalePattern}
+          setShowAllNotes={setShowAllNotes}
+          setShowNoteVariants={setShowNoteVariants}
+          showAllNotes={showAllNotes}
+          showNoteVariants={showNoteVariants}
+        />
+      </section>
+      <div className="block md:hidden">
+        <Border />
+      </div>
       <section className="flex flex-col gap-12">
         <h3 className="text-5xl m-auto">
           {formatFullNote({
@@ -185,51 +182,6 @@ export default function Home({
           })}
         </Swiper>
       </Dialog>
-      <Drawer>
-        <div className="flex flex-col gap-6">
-          <Metronome />
-          <Panel>
-            <label className="flex items-center gap-4 mb-2 cursor-pointer">
-              <input
-                type="radio"
-                className="radio radio-primary"
-                checked={scalePattern === "major"}
-                onChange={() => setScalePattern("major")}
-              />
-              <span className="select-none">major scale</span>
-            </label>
-            <label className="flex items-center gap-4 cursor-pointer">
-              <input
-                type="radio"
-                className="radio radio-primary"
-                checked={scalePattern === "minor"}
-                onChange={() => setScalePattern("minor")}
-              />
-              <span className="select-none">minor scale</span>
-            </label>
-          </Panel>
-          <Panel>
-            <label className="flex items-center gap-4 mb-2 cursor-pointer">
-              <input
-                type="checkbox"
-                className="toggle toggle-primary"
-                checked={showNoteVariants}
-                onChange={() => setShowNoteVariants((p) => !p)}
-              />
-              <span className="select-none">show note variants</span>
-            </label>
-            <label className="flex items-center gap-4 cursor-pointer">
-              <input
-                type="checkbox"
-                className="toggle toggle-primary"
-                checked={showAllNotes}
-                onChange={() => setShowAllNotes((p) => !p)}
-              />
-              <span className="select-none">show all notes</span>
-            </label>
-          </Panel>
-        </div>
-      </Drawer>
     </div>
   );
 }
