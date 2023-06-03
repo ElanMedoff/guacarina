@@ -40,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="overflow-y-scroll">
       <Script
         src="https://www.googletagmanager.com/gtag/js?id=G-69GTWHH8FQ"
         strategy="afterInteractive"
