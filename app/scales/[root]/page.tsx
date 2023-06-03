@@ -7,26 +7,47 @@ import { majorOcarinaScales, minorOcarinaScales } from "@/utils/ocarinaScales";
 import {
   formatFullNote,
   genericNoteToParamNote,
+  notes,
   ParamNote,
   paramNoteToIndex,
 } from "@/utils/genericNotes";
-import { twMerge as tm } from "tailwind-merge";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import Dialog, { useDialogControls } from "@/comps/Dialog";
 import Swiper from "@/comps/Swiper";
 import Ocarina from "@/app/scales/[root]/Ocarina";
 import { MdZoomIn as ZoomIcon } from "react-icons/md";
 import Border from "@/app/scales/[root]/Border";
-import Link from "next/link";
 import useFirstRender from "@/hooks/useFirstRender";
 import DrawerContent from "@/app/scales/[root]/DrawerContent";
 import { ControlsContext } from "@/app/scales/[root]/utils";
+import ScaleButtons from "./ScaleButtons";
+import { ScalePattern } from "../layout";
 
 interface Params {
   root: ParamNote;
 }
 
-export default function Home({ params }: { params: Params }) {
+export interface SearchParams {
+  pattern: ScalePattern;
+  variants: "1" | "0";
+  all: "1" | "0";
+}
+
+export async function generateStaticParams() {
+  return notes.map((note) => {
+    return {
+      root: genericNoteToParamNote(note),
+    };
+  });
+}
+
+export default function Page({
+  params,
+  searchParams,
+}: {
+  params: Params;
+  searchParams: SearchParams;
+}) {
   const {
     isOpen: isZoomOpen,
     close: closeZoom,
@@ -76,28 +97,14 @@ export default function Home({ params }: { params: Params }) {
     scaleRootIndex,
     showAllNotes,
     showNoteVariants,
+    firstRender,
   ]);
 
   return (
     <div className="flex flex-col gap-6 pt-4 pb-16 overflow-hidden">
       <p className="italic text-lg">select an ocarina scale to get started!</p>
       <section className="flex gap-4 justify-between w-full flex-wrap">
-        <div className="flex gap-2 flex-wrap">
-          {majorGenericScales.map((scale, index) => {
-            return (
-              <Link
-                href={`/scales/${genericNoteToParamNote(scale.root)}`}
-                className={tm(
-                  "no-animation btn btn-primary w-[90px] text-3xl",
-                  scaleRootIndex !== index && "btn-outline"
-                )}
-                key={index}
-              >
-                {formatFullNote({ note: scale.root })}
-              </Link>
-            );
-          })}
-        </div>
+        <ScaleButtons root={root} searchParams={searchParams} />
         <button onClick={() => showZoom()}>
           <ZoomIcon size={60} className="text-neutral" />
         </button>
