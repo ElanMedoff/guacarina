@@ -19,7 +19,7 @@ export const metadata = {
         height: 787,
       },
       {
-        url: "https://nextjs.org/landscape-wide.png",
+        url: "https://guacarina.com/landscape-wide.png",
         width: 1024,
         height: 512,
       },
