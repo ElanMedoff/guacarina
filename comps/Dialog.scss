@@ -1,21 +1,20 @@
 [data-reach-dialog-content] {
-  width: 100%;
-  padding: 0;
-  border-radius: 0.5rem;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  margin: 0;
-  @apply border-4 border-b-0 rounded-b-none border-neutral bg-base-100;
-}
-
-[data-reach-dialog-content] {
   @media (min-width: 640px) {
-    width: 75%;
-    position: static;
-    bottom: auto;
-    left: auto;
-    margin: 10vh auto;
-    @apply border-b-4 rounded-lg;
+    width: 75% !important;
+    position: static !important;
+    @apply border-4 border-neutral;
+    @apply rounded-lg;
+    @apply bg-base-100;
+  }
+
+  @media (min-width: 0px) and (max-width: 639px) {
+    width: 100% !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    margin: 0 !important;
+    @apply border-4 border-neutral border-b-0 rounded-b-none;
+    @apply rounded-lg;
+    @apply bg-base-100;
   }
 }
