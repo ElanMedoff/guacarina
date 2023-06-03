@@ -1,4 +1,4 @@
-.content {
+[data-reach-dialog-content] {
   width: 100%;
   padding: 0;
   border-radius: 0.5rem;
@@ -7,8 +7,10 @@
   left: 0;
   margin: 0;
   @apply border-4 border-b-0 rounded-b-none border-neutral bg-base-100;
+}
 
-  @media (min-width: 640px) {
+@media (min-width: 640px) {
+  [data-reach-dialog-content] {
     width: 75%;
     position: static;
     bottom: auto;
