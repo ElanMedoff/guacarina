@@ -17,11 +17,10 @@ import Swiper from "@/comps/Swiper";
 import Ocarina from "@/app/scales/[root]/Ocarina";
 import { MdZoomIn as ZoomIcon } from "react-icons/md";
 import Border from "@/app/scales/[root]/Border";
-import useFirstRender from "@/hooks/useFirstRender";
 import DrawerContent from "@/app/scales/[root]/DrawerContent";
 import { ControlsContext } from "@/app/scales/[root]/utils";
-import ScaleButtons from "./ScaleButtons";
-import { ScalePattern } from "../layout";
+import ScaleButtons from "@/app/scales/[root]/ScaleButtons";
+import { ScalePattern } from "@/app/scales/layout";
 
 interface Params {
   root: ParamNote;
@@ -58,7 +57,6 @@ export default function Page({
   const clientSearchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const firstRender = useFirstRender();
   const controls = useContext(ControlsContext);
   const {
     scalePattern,
@@ -81,8 +79,6 @@ export default function Page({
       : minorGenericScales[scaleRootIndex];
 
   useEffect(() => {
-    if (firstRender) return;
-
     const params = new URLSearchParams(clientSearchParams);
 
     params.set("pattern", scalePattern);
@@ -97,7 +93,6 @@ export default function Page({
     scaleRootIndex,
     showAllNotes,
     showNoteVariants,
-    firstRender,
   ]);
 
   return (

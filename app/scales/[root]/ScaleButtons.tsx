@@ -6,7 +6,7 @@ import {
 } from "@/utils/genericNotes";
 import { majorGenericScales } from "@/utils/genericScales";
 import { twMerge as tm } from "tailwind-merge";
-import { SearchParams } from "./page";
+import { SearchParams } from "@/app/scales/[root]/page";
 import Link from "next/link";
 
 export default function ScaleButtons({
