@@ -155,33 +155,54 @@ export function formatFullNote({
   );
 }
 
-export type ParamNote =
-  | `${Lowercase<Letter>}-${Lowercase<Modifier>}`
-  | `${Lowercase<Letter>}`;
+export type ScalePattern = "major" | "minor";
+export type Param =
+  | `${Lowercase<Letter>}-${Lowercase<Modifier>}-${ScalePattern}`
+  | `${Lowercase<Letter>}-${ScalePattern}`;
 
-function paramNoteToGenericNote(paramNote: ParamNote): Note {
-  const [lowerLetter, lowerModifier] = paramNote.split("-");
+export interface ScaleInfo {
+  scalePattern: ScalePattern;
+  genericNote: Note;
+}
+
+// TODO: use zod to validate param form
+export function paramToScaleInfo(param: Param): ScaleInfo {
+  const [lowerLetter, lowerModifierOrScalePattern, scalePatternParam] =
+    param.split("-");
   const letter = lowerLetter.toUpperCase() as Letter;
 
   let modifier;
-  if (isExisty(lowerModifier)) {
-    modifier = lowerModifier.toUpperCase() as Modifier;
+  let scalePattern;
+  if (
+    lowerModifierOrScalePattern === "sharp" ||
+    lowerModifierOrScalePattern === "flat"
+  ) {
+    modifier = lowerModifierOrScalePattern.toUpperCase() as Modifier;
+    scalePattern = scalePatternParam as ScalePattern;
+  } else {
+    scalePattern = lowerModifierOrScalePattern as ScalePattern;
   }
 
   return {
-    letter,
-    modifier,
+    genericNote: {
+      letter,
+      modifier,
+    },
+    scalePattern,
   };
 }
 
-export function genericNoteToParamNote({ letter, modifier }: Note) {
+export function scaleInfoToParam(
+  { letter, modifier }: Note,
+  scalePattern: ScalePattern
+) {
   return `${toLowerCase(letter)}${modifier ? "-" : ""}${toLowerCase(
     modifier ?? ""
-  )}` as ParamNote;
+  )}-${scalePattern}` as Param;
 }
 
-export function paramNoteToIndex(paramNote: ParamNote, genericScales: Scale[]) {
-  const genericNote = paramNoteToGenericNote(paramNote);
+export function paramToIndex(param: Param, genericScales: Scale[]) {
+  const { genericNote } = paramToScaleInfo(param);
   return genericScales.findIndex((scale) =>
     areNotesEqual(scale.root, genericNote)
   );

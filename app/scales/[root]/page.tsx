@@ -1,17 +1,18 @@
 "use client";
 
-import React, { Fragment, useContext, useEffect } from "react";
+import React, { Fragment, useContext } from "react";
 import Partition from "@/app/scales/[root]/Partition";
 import { majorGenericScales, minorGenericScales } from "@/utils/genericScales";
 import { majorOcarinaScales, minorOcarinaScales } from "@/utils/ocarinaScales";
 import {
   formatFullNote,
-  genericNoteToParamNote,
   notes,
-  ParamNote,
-  paramNoteToIndex,
+  Param,
+  paramToIndex,
+  paramToScaleInfo,
+  scaleInfoToParam,
+  ScalePattern,
 } from "@/utils/genericNotes";
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import Dialog, { useDialogControls } from "@/comps/Dialog";
 import Swiper from "@/comps/Swiper";
 import Ocarina from "@/app/scales/[root]/Ocarina";
@@ -20,54 +21,36 @@ import Border from "@/app/scales/[root]/Border";
 import DrawerContent from "@/app/scales/[root]/DrawerContent";
 import { ControlsContext } from "@/app/scales/[root]/utils";
 import ScaleButtons from "@/app/scales/[root]/ScaleButtons";
-import { ScalePattern } from "@/app/scales/layout";
 
 interface Params {
-  root: ParamNote;
-}
-
-export interface SearchParams {
-  pattern: ScalePattern;
-  variants: "1" | "0";
-  all: "1" | "0";
+  root: Param;
 }
 
 export async function generateStaticParams() {
-  return notes.map((note) => {
-    return {
-      root: genericNoteToParamNote(note),
-    };
-  });
+  return notes
+    .map((note) => {
+      return (["major", "minor"] as ScalePattern[]).map((scalePattern) => {
+        return {
+          root: scaleInfoToParam(note, scalePattern),
+        };
+      });
+    })
+    .flat();
 }
 
-export default function Page({
-  params,
-  searchParams,
-}: {
-  params: Params;
-  searchParams: SearchParams;
-}) {
+export default function Page({ params }: { params: Params }) {
   const {
     isOpen: isZoomOpen,
     close: closeZoom,
     show: showZoom,
   } = useDialogControls();
-  const { root } = params;
+  const { root: param } = params;
 
-  const clientSearchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
   const controls = useContext(ControlsContext);
-  const {
-    scalePattern,
-    setScalePattern,
-    setShowAllNotes,
-    setShowNoteVariants,
-    showAllNotes,
-    showNoteVariants,
-  } = controls!;
+  const { showAllNotes, showNoteVariants } = controls!;
+  const { scalePattern } = paramToScaleInfo(param);
 
-  const scaleRootIndex = paramNoteToIndex(root, majorGenericScales);
+  const scaleRootIndex = paramToIndex(param, majorGenericScales);
 
   const scale =
     scalePattern === "major"
@@ -78,42 +61,18 @@ export default function Page({
       ? majorGenericScales[scaleRootIndex]
       : minorGenericScales[scaleRootIndex];
 
-  useEffect(() => {
-    const params = new URLSearchParams(clientSearchParams);
-
-    params.set("pattern", scalePattern);
-    params.set("variants", showNoteVariants ? "1" : "0");
-    params.set("all", showAllNotes ? "1" : "0");
-
-    router.push(`${pathname}?${params.toString()}`);
-  }, [
-    clientSearchParams,
-    pathname,
-    scalePattern,
-    scaleRootIndex,
-    showAllNotes,
-    showNoteVariants,
-  ]);
-
   return (
     <div className="flex flex-col gap-6 pt-4 pb-16 overflow-hidden">
       <p className="italic text-lg">select an ocarina scale to get started!</p>
       <section className="flex gap-4 justify-between w-full flex-wrap">
-        <ScaleButtons root={root} searchParams={searchParams} />
+        <ScaleButtons param={param} />
         <button onClick={() => showZoom()}>
           <ZoomIcon size={60} className="text-neutral" />
         </button>
       </section>
       <Border />
       <section className="block md:hidden">
-        <DrawerContent
-          scalePattern={scalePattern}
-          setScalePattern={setScalePattern}
-          setShowAllNotes={setShowAllNotes}
-          setShowNoteVariants={setShowNoteVariants}
-          showAllNotes={showAllNotes}
-          showNoteVariants={showNoteVariants}
-        />
+        <DrawerContent />
       </section>
       <div className="block md:hidden">
         <Border />

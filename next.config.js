@@ -7,12 +7,12 @@ const nextConfig = {
     return [
       {
         source: "/",
-        destination: "/scales/c",
+        destination: "/scales/c-major",
         permanent: false,
       },
       {
         source: "/scales",
-        destination: "/scales/c",
+        destination: "/scales/c-major",
         permanent: false,
       },
     ];
