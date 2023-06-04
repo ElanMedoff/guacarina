@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Fragment, useContext } from "react";
-import Partition from "@/app/scales/[root]/Partition";
+import Partition from "@/app/scales/[scale]/Partition";
 import { majorGenericScales, minorGenericScales } from "@/utils/genericScales";
 import { majorOcarinaScales, minorOcarinaScales } from "@/utils/ocarinaScales";
 import {
@@ -15,15 +15,15 @@ import {
 } from "@/utils/genericNotes";
 import Dialog, { useDialogControls } from "@/comps/Dialog";
 import Swiper from "@/comps/Swiper";
-import Ocarina from "@/app/scales/[root]/Ocarina";
+import Ocarina from "@/app/scales/[scale]/Ocarina";
 import { MdZoomIn as ZoomIcon } from "react-icons/md";
-import Border from "@/app/scales/[root]/Border";
-import DrawerContent from "@/app/scales/[root]/DrawerContent";
-import { ControlsContext } from "@/app/scales/[root]/utils";
-import ScaleButtons from "@/app/scales/[root]/ScaleButtons";
+import Border from "@/app/scales/[scale]/Border";
+import DrawerContent from "@/app/scales/[scale]/DrawerContent";
+import { ControlsContext } from "@/app/scales/[scale]/utils";
+import ScaleButtons from "@/app/scales/[scale]/ScaleButtons";
 
 interface Params {
-  root: Param;
+  scale: Param;
 }
 
 export async function generateStaticParams() {
@@ -31,7 +31,7 @@ export async function generateStaticParams() {
     .map((note) => {
       return (["major", "minor"] as ScalePattern[]).map((scalePattern) => {
         return {
-          root: scaleInfoToParam(note, scalePattern),
+          scale: scaleInfoToParam(note, scalePattern),
         };
       });
     })
@@ -44,7 +44,7 @@ export default function Page({ params }: { params: Params }) {
     close: closeZoom,
     show: showZoom,
   } = useDialogControls();
-  const { root: param } = params;
+  const { scale: param } = params;
 
   const controls = useContext(ControlsContext);
   const { showAllNotes, showNoteVariants } = controls!;

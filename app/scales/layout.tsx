@@ -1,9 +1,9 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import Drawer from "@/app/scales/[root]/Drawer";
-import DrawerContent from "@/app/scales/[root]/DrawerContent";
-import { ControlsContext } from "@/app/scales/[root]/utils";
+import Drawer from "@/app/scales/[scale]/Drawer";
+import DrawerContent from "@/app/scales/[scale]/DrawerContent";
+import { ControlsContext } from "@/app/scales/[scale]/utils";
 import { ScalePattern } from "@/utils/genericNotes";
 
 function useControls() {

@@ -5,9 +5,9 @@ import {
 } from "@/utils/genericNotes";
 import Link from "next/link";
 import { useContext } from "react";
-import Metronome from "@/app/scales/[root]/Metronome";
-import Panel from "@/app/scales/[root]/Panel";
-import { ControlsContext } from "@/app/scales/[root]/utils";
+import Metronome from "@/app/scales/[scale]/Metronome";
+import Panel from "@/app/scales/[scale]/Panel";
+import { ControlsContext } from "@/app/scales/[scale]/utils";
 import { useParams } from "next/navigation";
 
 export default function DrawerContent() {
@@ -19,8 +19,8 @@ export default function DrawerContent() {
     showNoteVariants,
   } = controls!;
 
-  const { root } = useParams();
-  const { scalePattern, genericNote } = paramToScaleInfo(root as Param);
+  const { scale } = useParams();
+  const { scalePattern, genericNote } = paramToScaleInfo(scale as Param);
 
   return (
     <div className="flex flex-col gap-6">
