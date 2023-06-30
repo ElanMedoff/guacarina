@@ -6,12 +6,10 @@ import { majorGenericScales, minorGenericScales } from "@/utils/genericScales";
 import { majorOcarinaScales, minorOcarinaScales } from "@/utils/ocarinaScales";
 import {
   formatFullNote,
-  notes,
+  generateScaleParams,
   Param,
   paramToIndex,
   paramToScaleInfo,
-  scaleInfoToParam,
-  ScalePattern,
 } from "@/utils/genericNotes";
 import Dialog, { useDialogControls } from "@/comps/Dialog";
 import Swiper from "@/comps/Swiper";
@@ -21,21 +19,18 @@ import Border from "@/app/scales/[scale]/Border";
 import DrawerContent from "@/app/scales/[scale]/DrawerContent";
 import { ControlsContext } from "@/app/scales/[scale]/utils";
 import ScaleButtons from "@/app/scales/[scale]/ScaleButtons";
+import { notFound } from "next/navigation";
 
 interface Params {
   scale: Param;
 }
 
 export async function generateStaticParams() {
-  return notes
-    .map((note) => {
-      return (["major", "minor"] as ScalePattern[]).map((scalePattern) => {
-        return {
-          scale: scaleInfoToParam(note, scalePattern),
-        };
-      });
-    })
-    .flat();
+  return generateScaleParams().map((scaleParam) => {
+    return {
+      scale: scaleParam,
+    };
+  });
 }
 
 export default function Page({ params }: { params: Params }) {
@@ -47,9 +42,13 @@ export default function Page({ params }: { params: Params }) {
   const { scale: param } = params;
 
   const controls = useContext(ControlsContext);
+
+  if (!generateScaleParams().includes(param)) {
+    return notFound();
+  }
+
   const { showAllNotes, showNoteVariants } = controls!;
   const { scalePattern } = paramToScaleInfo(param);
-
   const scaleRootIndex = paramToIndex(param, majorGenericScales);
 
   const scale =

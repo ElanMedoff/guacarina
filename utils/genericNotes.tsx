@@ -165,7 +165,16 @@ export interface ScaleInfo {
   genericNote: Note;
 }
 
-// TODO: use zod to validate param form
+export function generateScaleParams() {
+  return notes
+    .map((note) => {
+      return (["major", "minor"] as ScalePattern[]).map((scalePattern) => {
+        return scaleInfoToParam(note, scalePattern);
+      });
+    })
+    .flat();
+}
+
 export function paramToScaleInfo(param: Param): ScaleInfo {
   const [lowerLetter, lowerModifierOrScalePattern, scalePatternParam] =
     param.split("-");
